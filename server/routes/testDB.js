@@ -9,7 +9,7 @@ router.get("/", function(req, res, next) {
 });
 
 // Connecting to MongoDB
-mongoose.connect("mongodb://mongodb:27017/test");
+mongoose.connect("mongodb+srv://studentconnectdatabase:studentconnect@cluster0.ct0mq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 
 // If there is a connection error send an error message
 mongoose.connection.on("error", error => {
