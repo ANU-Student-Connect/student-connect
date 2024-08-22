@@ -24,10 +24,10 @@ This is the development version of the Student Connect website.
 
 2. Install the dependencies:
    ```
-   cd frontend
+   cd client
    npm install
    cd ..
-   cd backend
+   cd server
    npm install
    cd ..
    ```
