@@ -38,7 +38,7 @@ This is the development version of the Student Connect website.
    ```
 
 ## Features
-- ANU User authenticatio
+- ANU User authentication
 - Interest-based friend suggestions
 - Peer-to-peer chat
 
