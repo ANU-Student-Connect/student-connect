@@ -24,7 +24,7 @@ jobs:
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-        
+
       - name: Configure Docker
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev
@@ -39,7 +39,7 @@ jobs:
       - name: Deploy to Google Cloud Run
         run: |
           gcloud run deploy studentconnect \
-            --image us-central1-docker.pkg.dev/${{ secrets.GOOGLE_PROJECT }}/studentconnect/app:latest \
+            --image us-central1-docker.pkg.dev/${{ secrets.GOOGLE_PROJECT }}/studentconnect/app \
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated
