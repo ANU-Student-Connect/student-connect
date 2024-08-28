@@ -30,18 +30,8 @@ jobs:
           gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Build and push Docker images
-        env:
-          GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
         run: |
           docker compose build
-          docker compose push
-
-      - name: Deploy to Google Cloud Run
-        run: |
-          gcloud run deploy studentconnect \
-            --image us-central1-docker.pkg.dev/${{ secrets.GOOGLE_PROJECT }}/studentconnect/app \
-            --platform managed \
-            --region us-central1 \
-            --allow-unauthenticated
+          docker push us-central1-docker.pkg.dev/${{ secrets.GOOGLE_PROJECT }}/student-connect:latest
 
 
