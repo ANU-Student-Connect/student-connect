@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - 'main'
-      - 'dev'
+      - 'gcloud-test'
+  pull_request:
+    branches:
+      - 'main'
 
 jobs:
   deploy:
