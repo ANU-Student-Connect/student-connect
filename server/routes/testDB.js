@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-const databaseURL = "mongodb+srv://studentconnectdatabase:studentconnect@cluster0.ct0mq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+const databaseURL = "mongodb+srv://studentconnectdatabase:studentconnect@cluster0.ct0mq.mongodb.net/studentconnect?retryWrites=true&w=majority&appName=Cluster0"
 
 // Variable to be sent to Frontend with Database status
 let databaseConnection = "Waiting for Database response...";
