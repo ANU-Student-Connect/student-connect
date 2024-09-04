@@ -9,7 +9,7 @@ import path from 'path';
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
 import testApiRouter from './routes/testAPI.js';
-// import testDBRouter from "./routes/testDB";
+import testDBRouter from "./routes/testDB.js";
 import authRouter from "./routes/auth.js";
 
 const app = express();
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 
 app.use('/users', usersRouter);
 app.use('/testAPI', testApiRouter);
-// app.use("/testDB", testDBRouter);
+app.use("/testDB", testDBRouter);
 app.use('/api/auth', authRouter);
 
 // catch 404 and forward to error handler

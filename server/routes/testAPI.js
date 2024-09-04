@@ -1,5 +1,5 @@
 import { Router } from 'express';
-var router = Router();
+const router = Router();
 
 router.get('/', function(req, res, next) {
     res.send('API is working');
