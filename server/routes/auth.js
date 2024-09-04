@@ -1,20 +1,13 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
+import {login, signup, logout } from "../controllers/auth.controller.js";
 
-// user signin POST route for fake login data
-router.post('/signin', (req, res, next) => {
-    const { email, password } = req.body;
+router.post('/login', login);
 
-    // there is no specific logic here as user should login using any email address and password
-    if (email && password) {
+router.post('/signup', signup);
 
-        // setting cookie to rememebr user's login status
-        res.cookie('user', email, { httpOnly: true });
-        return res.status(200).json({ message: 'Sign in successful', redirectUrl: '/home' });
-    } else {
-        return res.status(400).json({ message: 'Email and password required' });
-    }
-});
+router.post('/logout', logout);
 
-module.exports = router;
+
+export default router;
