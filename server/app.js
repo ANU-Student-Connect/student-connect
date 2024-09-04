@@ -6,11 +6,8 @@ import logger from 'morgan';
 import cors from "cors";
 import path from 'path';
 
-import indexRouter from './routes/index.js';
-import usersRouter from './routes/users.js';
-import testApiRouter from './routes/testAPI.js';
-import testDBRouter from "./routes/testDB.js";
-import authRouter from "./routes/auth.js";
+import connectToDB from "./db/connectToDB.js";
+import authRouter from "./routes/authRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -31,9 +28,9 @@ app.get('/', (req, res) => {
   res.send('this is the index page');
 });
 
-app.use('/users', usersRouter);
-app.use('/testAPI', testApiRouter);
-app.use("/testDB", testDBRouter);
+// app.use('/users', usersRouter);
+// app.use('/testAPI', testApiRouter);
+// app.use("/testDB", testDBRouter);
 app.use('/api/auth', authRouter);
 
 // catch 404 and forward to error handler
@@ -53,6 +50,7 @@ app.use(function(req, res, next) {
 // });
 
 app.listen(PORT, () => {
+  connectToDB();
   console.log(`Server is running on port ${PORT}`);
 });
 
