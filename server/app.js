@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testApiRouter = require('./routes/testAPI');
 var testDBRouter = require("./routes/testDB");
+var authRouter = require("./routes/auth");
 
 var app = express();
 

@@ -15,22 +15,29 @@ function isANUEmail(email) {
 
 // this functions sends a verification email
 async function sendVerificationEmail(email, verificationCode) {
-    const transporter = nodemailer.createTransport({
-        service: 'support@studentconnect.com',  // this should be changed to the correct email address
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
+    try{
+        const transporter = nodemailer.createTransport({
+            service: 'support@studentconnect.com',  // this should be changed to the correct email address
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'ANU Student Connect - Email Verification',
-        text: `Your verification code is: ${verificationCode}`
-    };
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'ANU Student Connect - Email Verification',
+            text: `Your verification code is: ${verificationCode}`
+        };
 
-    return transporter.sendMail(mailOptions);
+        // Send email and handle any errors
+        let info = await transporter.sendMail(mailOptions);
+        return { success: true, info };
+    } catch (error) {
+        console.error('Error sending verification email:', error);
+        return { success: false, error };
+    }
 }
 
 module.exports = {
