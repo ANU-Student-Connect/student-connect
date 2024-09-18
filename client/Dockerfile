@@ -1,5 +1,5 @@
 # Use an official Node.js image as the base image
-FROM node:18-alpine
+FROM node:18-alpine as build
 
 # Set working directory
 RUN mkdir -p /client
@@ -14,13 +14,14 @@ COPY . /client/
 # CMD ["npm", "run", "start"]
 RUN npm run build
 
-RUN npm install -g serve
-CMD ["serve", "-s", "build", "-l", "3000"]
-EXPOSE 3000
-
-# FROM nginx:alpine
-# COPY --from=0 /client/build /usr/share/nginx/html
-
+# RUN npm install -g serve
+# CMD ["serve", "-s", "build", "-l", "3000"]
 # EXPOSE 3000
 
-# CMD ["nginx", "-g", "daemon off;"]
+# Setup Nginx
+FROM nginx:alpine
+COPY --from=build /client/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

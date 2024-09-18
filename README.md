@@ -17,28 +17,28 @@ This is the development version of the Student Connect website.
 
 ### Installation
 1. Clone the repository:
-   ```
-   git clone https://github.com/your-username/student-connect.git
-   cd student-connect
-   ```
+```bash
+git clone https://github.com/your-username/student-connect.git
+cd student-connect
+```
 
-2. Install the dependencies:
-   ```
-   cd frontend
-   npm install
-   cd ..
-   cd backend
-   npm install
-   cd ..
-   ```
+1. Install the dependencies:
+```bash
+cd client
+npm install
+cd ..
+cd server
+npm install
+cd ..
+```
 
-3. Build and run the Docker containers:
-   ```
-   docker compose up --build
-   ```
+1. Build and run the Docker containers:
+```bash
+docker compose up --build
+```
 
 ## Features
-- ANU User authenticatio
+- ANU User authentication
 - Interest-based friend suggestions
 - Peer-to-peer chat
 
