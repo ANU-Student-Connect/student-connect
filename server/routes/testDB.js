@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
+const databaseURL = "mongodb+srv://studentconnectdatabase:studentconnect@cluster0.ct0mq.mongodb.net/studentconnect?retryWrites=true&w=majority&appName=Cluster0"
+
 // Variable to be sent to Frontend with Database status
 let databaseConnection = "Waiting for Database response...";
 router.get("/", function(req, res, next) {
@@ -9,7 +11,7 @@ router.get("/", function(req, res, next) {
 });
 
 // Connecting to MongoDB
-mongoose.connect("mongodb://mongodb:27017/test");
+mongoose.connect(databaseURL);
 
 // If there is a connection error send an error message
 mongoose.connection.on("error", error => {
