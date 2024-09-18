@@ -4,12 +4,13 @@ const generateTokenAndSetCookie = (userId, res) => {
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
         expiresIn: '15d'
     });
-    res.cookie('token', token, {
-        maxAge: 15 * 24 * 60 * 60 * 1000,
-        httpOnly: true, // XSS attack protection
-        sameSite: 'strict', // CSRF attack protection
-        secure: process.env.NODE_ENV !== 'development' ? true : false
+
+    res.cookie('jwt', token, {
+        httpOnly: true, // prevents XSS attacks cross-site scripting attacks
+        maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
+        sameSite: 'strict', // CSRF attacks Cross-Site Request Forgery attacks
+        secure: process.env.NODE_ENV === 'production' ? true : false // cookie will only be set in https
     });
-};
+}
 
 export default generateTokenAndSetCookie;
