@@ -60,7 +60,7 @@ export const login = async (req, res) => {
 
         res.status(200).json({
             _id: user._id,
-            email: newUser.email,
+            email: user.email,
         });
 
     } catch (error) {
