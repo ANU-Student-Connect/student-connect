@@ -24,7 +24,7 @@ const Login = () => {
 				<form onSubmit={handleSubmit}>
 					<div>
 						<label className='label p-2'>
-							<span className='text-base label-text'>email</span>
+							<span className='text-base label-text'>ANU Email</span>
 						</label>
 						<input
 							type='text'
