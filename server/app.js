@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testApiRouter = require('./routes/testAPI');
 var testDBRouter = require("./routes/testDB");
+var authRouter = require("./routes/auth");
 
 const mongoose = require('mongoose');
 const routes = require('./routes/index'); 
