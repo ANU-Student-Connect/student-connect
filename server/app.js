@@ -1,3 +1,7 @@
+const { auth } = require('express-openid-connect');
+require('dotenv').config(); // To load environment variables from .env file
+
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -23,6 +27,25 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
   console.log('Connected to MongoDB');
 });
+
+
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: process.env.AUTH0_SECRET,  
+  baseURL: 'http://localhost:9000',
+  clientID: 'LJKVeegBb7wFMy7kxHU71QBbrHrzPmNf',  
+  issuerBaseURL: 'https://dev-sghfq7xzj3g363t2.au.auth0.com' 
+};
+
+// auth0 middleware to handle login, logout, and callback routes
+app.use(auth(config));
+
+
+app.get('/', (req, res) => {
+  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
