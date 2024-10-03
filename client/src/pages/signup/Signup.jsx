@@ -31,8 +31,8 @@ const SignUp = () => {
                             <span className='text-base label-text'>ANU Email Address</span>
                         </label>
                         <input type='text' placeholder='Enter fullName' className='w-full input input-bordered h-10'
-                            value={input.fullName}
-                            onChange={(e) => setInput({ ...input, fullName: e.target.value })}
+                            value={input.email}
+                            onChange={(e) => setInput({ ...input, email: e.target.value })}
                         />
                     </div>
 
