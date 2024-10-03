@@ -13,8 +13,7 @@ const Conversation = () => {
 
 				<div className='flex flex-col flex-1'>
 					<div className='flex gap-3 justify-between'>
-						<p className='font-bold text-gray-200'>John Doe</p>
-						<span className='text-xl'>🎃</span>
+						<p className='font-bold text-gray-200'>Hello hello</p>
 					</div>
 				</div>
 			</div>
