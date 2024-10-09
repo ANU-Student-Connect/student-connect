@@ -83,40 +83,42 @@ class App extends Component {
 
   render() {
     return (
-      <>
-        <div className="flex flex-col h-screen">
-          <Header currentPage={this.state.currentPage} />
-          <div className="flex-1 flex overflow-hidden">
-            <Sidebar
-              friends={this.state.friends}
-              onFriendSelect={this.handleFriendSelect}
-            />
-            <main className="flex-1 flex">
-              <ChatWindow
-                onToggleProfile={this.toggleProfile}
-                isProfileOpen={this.state.isProfileOpen}
-                selectedFriend={this.state.selectedFriend}
-              />
-              <UserProfile isOpen={this.state.isProfileOpen} />
-            </main>
-          </div>
-          {/* API and DB responses */}
-          <div className="p-4 bg-gray-100">
-            <p className="text-sm">{this.state.apiResponse}</p>
-            <p className="text-sm">{this.state.dbResponse}</p>
-          </div>
-        </div>
-        
-        <Router>
-          <Routes>
-            <Route path="/" element={<GetStart />} />
-            <Route path="/question" element={<Question />} />
-            <Route path="/questionend" element={<QuestionEnd />} />
-          </Routes>
-        </Router>
-      </>
+      <Router>
+        <Routes>
+          {/* Chat Interface - only visible on /messages */}
+          <Route path="/messages" element={
+            <div className="flex flex-col h-screen">
+              <Header currentPage={this.state.currentPage} />
+              <div className="flex-1 flex overflow-hidden">
+                <Sidebar
+                  friends={this.state.friends}
+                  onFriendSelect={this.handleFriendSelect}
+                />
+                <main className="flex-1 flex">
+                  <ChatWindow
+                    onToggleProfile={this.toggleProfile}
+                    isProfileOpen={this.state.isProfileOpen}
+                    selectedFriend={this.state.selectedFriend}
+                  />
+                  <UserProfile isOpen={this.state.isProfileOpen} />
+                </main>
+              </div>
+              {/* API and DB responses */}
+              <div className="p-4 bg-gray-100">
+                <p className="text-sm">{this.state.apiResponse}</p>
+                <p className="text-sm">{this.state.dbResponse}</p>
+              </div>
+            </div>
+          } />
+          
+          {/* Other Routes */}
+          <Route path="/" element={<GetStart />} />
+          <Route path="/question" element={<Question />} />
+          <Route path="/questionend" element={<QuestionEnd />} />
+        </Routes>
+      </Router>
     );
-}
+  }
 }
 
 export default App;
