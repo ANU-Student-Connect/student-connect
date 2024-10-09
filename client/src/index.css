@@ -10,7 +10,36 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+:root{
+  --primary-dark: #5651e5;
+  --primary-light: #709dff;
+  --primary-pink: #F5B5F4;
+  --primary-blue: #BEE0FD;
+}
+
+@layer base{
+  html{
+    @apply scroll-smooth
+  }
+
+  body{
+    @apply font-poppins;
+  }
+
+  li{
+    @apply p-4 text-sm
+  }
+
+  button{
+    @apply px-4 py-2 border bg-gradient-to-r from-[var(--primary-dark)] to-[var(--primary-light)] text-white
+
+  }
+
+  h2{
+    @apply text-xl font-bold
+  }
+
+  .questionnaire-bg{
+    background: linear-gradient(45deg, var(--primary-pink), var(--primary-blue));
+  }
 }

@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import GetStart from './components/questionnaire/GetStart'
+import Question from './components/questionnaire/Question'
+import QuestionEnd from './components/questionnaire/QuestionEnd'
 import './App.css';
 import Header from './MessageComponent/Header';
 import Sidebar from './MessageComponent/Sidebar';
@@ -102,6 +105,13 @@ class App extends Component {
             <p className="text-sm">{this.state.dbResponse}</p>
           </div>
         </div>
+      <Router>
+            <Routes>
+                <Route path="/" element={<GetStart/>} />
+                <Route path="/question" element={<Question/>} />
+                <Route path="/questionend" element={<QuestionEnd/>} />
+            </Routes>
+        </Router>
     );
   }
 }
