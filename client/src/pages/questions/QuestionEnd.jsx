@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from "react";
 import { useNavigate } from 'react-router-dom';
 
@@ -6,8 +7,8 @@ import Completed from '../../assets/icons/completed.png'
 const QuestionEnd = () => {
     const navigate = useNavigate();
 
-    const showQuestion = () => {
-        navigate('/');
+    const showHomePage = () => {
+        navigate('/home');
     }
 
     return (
@@ -17,7 +18,7 @@ const QuestionEnd = () => {
                     <img src={Completed} alt="Completed"/>
                     <h1 className="text-4xl ml-5">Thank you for your help.</h1>
                 </div>
-               
+
                 <div className="flex items-center mb-16">
                     <h1 className="text-4xl">Welcome to ANU Student Connect.</h1>
                 </div>
@@ -27,7 +28,7 @@ const QuestionEnd = () => {
                 </div>
 
                 <div className="flex items-center mb-10">
-                    <button onClick={showQuestion} className="w-40 px-4 py-2">Get Started</button>
+                    <button onClick={showHomePage} className="w-40 px-4 py-2">Get Started</button>
                 </div>
             </div>
 

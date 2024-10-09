@@ -1,7 +1,9 @@
+// eslint-disable-next-line no-unused-vars
 import React from "react";
 import notification from '../../assets/icons/notification.png'
 import defaultavater from '../../assets/icons/defaultavater.png'
 import chosenstate from '../../assets/icons/chosenstate.png'
+
 
 const TopBar = () =>{
     return(
