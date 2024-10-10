@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Dropdown from './Dropdown';
-import { SocietiesContent, ContactsContent, MajorContent, InterestContent } from './DropdownContents';
+import Dropdown from '../../MessageComponent/Dropdown';
+import { SocietiesContent, ContactsContent, MajorContent, InterestContent } from '../../MessageComponent/DropdownContents';
 
 const UserProfile = ({ isOpen }) => {
     const [openDropdown, setOpenDropdown] = useState(null);
