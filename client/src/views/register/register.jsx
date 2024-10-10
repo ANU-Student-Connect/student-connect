@@ -1,6 +1,6 @@
 
 import React from 'react';
-import './register.css';  // 引入样式
+import './register.css';
 
 function LoginView() {
   return (

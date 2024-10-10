@@ -1,6 +1,6 @@
 
 import React from 'react';
-import './login.css';  // 引入样式
+import './login.css';
 
 function LoginView() {
   return (
