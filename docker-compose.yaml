@@ -1,0 +1,39 @@
+services:
+  server:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: webapp-server
+    restart: always
+    ports:
+      - "9000:9000"
+    networks:
+      - dev-network
+    volumes:
+      - ./server:/server/src/app
+      - /server/node_modules
+    # environment:
+    #   - MONGO_URI="mongodb+srv://studentconnectdatabase:studentconnect@cluster0.ct0mq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    
+  client:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: webapp-client
+    restart: always
+    depends_on:
+      - server
+    ports:
+      - "3000:80"
+    networks:
+      - dev-network
+    # environment:
+    #   - REACT_APP_API_URL=http://server:9000
+    volumes:
+      - ./client:/client/src/app
+      - /client/node_modules
+  
+networks:
+  dev-network:
+    driver: bridge
+  
