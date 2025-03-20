@@ -8,6 +8,7 @@ import QuestionBody from './pages/questions/QuestionBody'
 import QuestionEnd from './pages/questions/QuestionEnd'
 
 import { Toaster } from 'react-hot-toast'
+import Message from "./pages/message/Message";
 // import { useAuthContext } from './context/AuthContext'
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path='/questionstart' element={<QuestionStart />} />
         <Route path='/questionbody' element={<QuestionBody />} />
         <Route path='/questionend' element={<QuestionEnd />} />
+        <Route path='/message' element={<Message />} />
       </Routes>
       <Toaster />
     </div>

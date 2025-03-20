@@ -1,6 +1,5 @@
 import React from 'react';
-import { ReactComponent as ReadIcon } from '../Assert/icons/read.svg';
-// import { ReactComponent as UnreadIcon } from '../assets/icons/unread.svg';
+import ReadIcon from '../../assets/icons/messagesicons/read.svg';
 import LottieTypingAnimation from './LottieTypingAnimation';
 
 const FriendCard = ({ avatar, name, status, time, messageStatus, unreadCount, onClick }) => {
@@ -8,15 +7,13 @@ const FriendCard = ({ avatar, name, status, time, messageStatus, unreadCount, on
         if (unreadCount > 0) {
             return (
                 <span className="inline-block bg-red-500 text-white text-xs rounded-full px-2 py-1">
-          {unreadCount}
-        </span>
+                    {unreadCount}
+                </span>
             );
         }
         switch (messageStatus) {
             case 'read':
-                return <ReadIcon className="w-4 h-4 text-blue-500" />;
-            // case 'unread':
-            //     return <UnreadIcon className="w-4 h-4 text-gray-400" />;
+                return <img src={ReadIcon} alt="Read" className="w-4 h-4" />;
             case 'typing':
                 return <LottieTypingAnimation />;
             default:

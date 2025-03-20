@@ -1,8 +1,8 @@
 import React from 'react';
-import WeChatIcon from '../Assert/icons/WeChat.svg';
-import FacebookIcon from '../Assert/icons/Facebook.svg';
-import SlackIcon from '../Assert/icons/Slack.svg';
-import DiscordIcon from '../Assert/icons/Discord.svg';
+import WeChatIcon from '../../assets/icons/messagesicons/WeChat.svg';
+import FacebookIcon from '../../assets/icons/messagesicons/Facebook.svg';
+import SlackIcon from '../../assets/icons/messagesicons/Slack.svg';
+import DiscordIcon from '../../assets/icons/messagesicons/Discord.svg';
 
 
 export const SocietiesContent = () => {
