@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import useLogin from "../../hooks/useLogin";
+import "./login.css"
 
 const Login = () => {
 	const [email, setEmail] = useState("");
@@ -14,51 +15,41 @@ const Login = () => {
 	};
 
 	return (
-		<div className='flex flex-col items-center justify-center min-w-96 mx-auto'>
-			<div className='w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0'>
-				<h1 className='text-3xl font-semibold text-center text-gray-300'>
-					Login
-					<span className='text-blue-500'> Student Connect</span>
-				</h1>
-
-				<form onSubmit={handleSubmit}>
+		<div className="login-page">
+            <div className="form-container">
+                <h1 className="pos-top">ANU STUDENT CONNECT</h1>
+                <h2 className="main-title">Sign In</h2>
+                <form onSubmit={handleSubmit}>
+                    <label>Username</label>
+                    <input className='w-full input input-bordered h-10 px-2 text-gray-700' type="email" placeholder="Enter your ANU email address" onChange={(e) => setEmail(e.target.value)} />
+                    <label>Password</label>
+                    <div className="password-container row">
+                        <input className='w-full input input-bordered h-10 px-2 text-gray-700' type="password" placeholder="Enter Password" onChange={(e) => setPassword(e.target.value)} />
+                        <span
+                            className="icon-password" x
+                            style={{ top: "3px" }}
+                        ></span>
+                    </div>
 					<div>
-						<label className='label p-2'>
-							<span className='text-base label-text'>ANU Email</span>
-						</label>
-						<input
-							type='text'
-							placeholder='Enter your ANU email address'
-							className='w-full input input-bordered h-10'
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-						/>
+						<button className='btn btn-block btn-sm mt-5 w-full text-gray-700' disabled={loading}>
+							Login
+						</button>
 					</div>
-
-					<div>
-						<label className='label'>
-							<span className='text-base label-text'>Password</span>
-						</label>
-						<input
-							type='password'
-							placeholder='Enter Password'
-							className='w-full input input-bordered h-10'
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-						/>
-					</div>
+                </form>
+                <p>
 					<Link to='/signup' className='text-sm  hover:underline hover:text-blue-600 mt-2 inline-block'>
 						New User? Signup
 					</Link>
+                </p>
+            </div>
 
-					<div>
-						<button className='btn btn-block btn-sm mt-2' disabled={loading}>
-							{loading ? <span className='loading loading-spinner '></span> : "Login"}
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
+            <div className="welcome-container login">
+                <div className="word">
+                    <h1>Welcome to</h1>
+                    <h1>Student Connect Family!</h1>
+                </div>
+            </div>
+        </div>
 	);
 };
 export default Login;
