@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search } from 'lucide-react';
-import FriendCard from './FriendCard';x
+import FriendCard from './FriendCard';
 
 const Sidebar = ({ friends, onFriendSelect }) => {
     return (
