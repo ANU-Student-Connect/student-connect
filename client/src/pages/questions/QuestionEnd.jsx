@@ -10,7 +10,17 @@ const QuestionEnd = () => {
     }
 
     return (
-        <div className="flex flex-col min-h-screen items-center justify-center bg-gradient-to-r from-purple-200 to-blue-200 p-4">
+        <div className="flex flex-col min-h-screen items-center justify-center bg-gradient-to-r from-purple-200 to-blue-200 p-4"
+        style={{
+            minHeight: '100vh',
+            minWidth: '100vw',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'linear-gradient(to right, #f0c2f0, #b3e5fc)',
+            padding: '4px'
+        }}>
             <div className="flex flex-col items-center justify-center mt-12 flex-grow">
                 <div className="flex items-center mb-10">
                     <img src={Completed} alt="Completed"/>

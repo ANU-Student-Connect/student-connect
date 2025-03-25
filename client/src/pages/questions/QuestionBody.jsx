@@ -76,6 +76,7 @@ const Question = () => {
             setSelectedIndices(selectedIndices.filter(i => i !== index));
         } else {
             setSelectedIndices([...selectedIndices, index]);
+            //handleLeftClick();
         }
     };
 
@@ -101,7 +102,12 @@ const Question = () => {
     const progress = (currentQuestion / totalQuestions) * 100;
 
     return (
-        <div className="flex flex-col h-screen questionnaire-bg">
+        <div className="flex flex-col h-screen questionnaire-bg"
+        style={{
+            background: 'linear-gradient(to right, #f0c2f0, #b3e5fc)',
+            minHeight: '100vh',
+            minWidth: '100vw'
+          }}>
             <div className="text-right mr-5 mt-5">
                 <h1 className="text-xl">
                     <u onClick={handleRightClick} style={{ cursor: 'pointer' }}>Skip</u>
