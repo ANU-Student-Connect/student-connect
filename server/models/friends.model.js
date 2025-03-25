@@ -10,12 +10,11 @@ const friendSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
-        unique: true,
     },
     status: {
         type: String,
         enum: ['pending', 'accepted'],
-        defaultValue: 'pending',
+        default: 'pending',
     },
     createdAt: {
         type: Date,
@@ -23,14 +22,14 @@ const friendSchema = new mongoose.Schema({
     },
 });
 
-friendSchema.set('toJSON', {
-    virtuals: ['friendUsername'],
-});
-
+// Virtual attribute, the username in friend_id can be obtained through friend.friendUsername (if needed)
 friendSchema.virtual('friendUsername').get(function () {
-    return this.friend_id; // Adjust according to actual needs
+    return this.friend_id?.username;
 });
 
-const Friend = mongoose.model('Friend', friendSchema);
+//Configure toJSON Include virtual attributes when exporting
+friendSchema.set('toJSON', {
+    virtuals: true,
+});
 
-export default Friend;
+export default mongoose.model('Friend', friendSchema);
