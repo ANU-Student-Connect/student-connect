@@ -7,7 +7,7 @@ import messageRoutes from './routes/message.routes.js';
 import userRoutes from './routes/user.routes.js';
 import friendSuggestionsRoutes from './routes/friendSuggestions.routes.js';
 import connectToMongoDB from './db/connectToMongoDB.js';
-import {getFriendDetails} from "./controllers/friendDetails.controller.js";
+import friendDetailsRoutes from "./routes/friendDetails.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -21,7 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/suggest', friendSuggestionsRoutes);
-app.use('/api/v1', [
+app.use('/api/', [
     friendDetailsRoutes,
     messageRoutes
 ]);
