@@ -60,3 +60,52 @@ export const getMessages = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+export const getAllMessages = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const messages = await Message.findAll({
+            where: {
+                [Op.or]: [
+                    { sender_id: userId },
+                    { receiver_id: userId },
+                ],
+            },
+            include: [
+                {
+                    model: User,
+                    as: 'sender',
+                    attributes: ['id', 'username'],
+                },
+                {
+                    model: User,
+                    as: 'receiver',
+                    attributes: ['id', 'username'],
+                },
+            ],
+            order: { createdAt: 'DESC' },
+            group: ['sender_id', 'receiver_id'], // group by conversation
+        });
+
+// convert to a more readable format
+        const formattedMessages = messages.reduce((acc, message) => {
+            const key = `${message.sender_id}-${message.receiver_id}`;
+            if (!acc[key]) {
+                acc[key] = {
+                    participants: [
+                        message.sender_id === userId ? message.sender : message.receiver,
+                        message.sender_id === userId ? message.receiver : message.sender,
+                    ],
+                    messages: [],
+                };
+            }
+            acc[key].messages.push(message);
+            return acc;
+        }, {});
+
+        res.status(200).json({ data: Object.values(formattedMessages) });
+    } catch (error) {
+        console.error('Error in getAllMessages:', error.message);
+        res.status(500).json({ error: 'Server internal error' }); }
+};
