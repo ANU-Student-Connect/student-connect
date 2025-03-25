@@ -29,11 +29,8 @@ function App() {
         <Route path='/questionstart' element={<QuestionStart />} />
         <Route path='/questionbody' element={<QuestionBody />} />
         <Route path='/questionend' element={<QuestionEnd />} />
-<<<<<<< HEAD
         <Route path='/message' element={<Message />} />
-=======
         <Route path='/userprofile' element={<UserProfile/>}/>
->>>>>>> 32bf814 (init userprofile page)
       </Routes>
       <Toaster />
     </div>
