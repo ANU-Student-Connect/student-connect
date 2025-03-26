@@ -6,6 +6,7 @@ import Signup from './pages/signup/Signup'
 import QuestionStart from './pages/questions/QuestionStart'
 import QuestionBody from './pages/questions/QuestionBody'
 import QuestionEnd from './pages/questions/QuestionEnd'
+import UserProfile from './pages/userProfile/UserProfile'
 
 import { Toaster } from 'react-hot-toast'
 import Message from "./pages/message/Message";
@@ -30,6 +31,7 @@ function App() {
         <Route path='/questionbody' element={<QuestionBody />} />
         <Route path='/questionend' element={<QuestionEnd />} />
         <Route path='/message' element={<Message />} />
+        <Route path='/userprofile' element={<UserProfile/>}/>
       </Routes>
       <Toaster />
     </div>
