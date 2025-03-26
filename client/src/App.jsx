@@ -22,7 +22,8 @@ function App() {
         {/* <Route path="/questionstart" element={authUser ? <QuestionStart/> : <Navigate to={"/login"}/>}/>
         <Route path="/questionbody" element={authUser ? <QuestionBody/> : <Navigate to={"/login"}/>} />
         <Route path="/questionend" element={authUser ? <QuestionEnd/> : <Navigate to={"/login"}/>} /> */}
-        <Route path='/home' element={<Home />} />
+        <Route path='/' element={<Home />} />
+          <Route path='/home' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/questionstart' element={<QuestionStart />} />
