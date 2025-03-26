@@ -3,20 +3,17 @@ import toast from 'react-hot-toast';
 import { useAuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const useLogin = () => {
+const useLogout = () => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
 
     const { setAuthUser } = useAuthContext()
 
-    const login = async (email, password) => {
-        const success = handleInputErrors(email, password);
-        if (!success) return;
-
+    const logout = async (email, password) => {
         setLoading(true);
         try {
-            const res = await fetch('api/auth/login', {
+            const res = await fetch('api/auth/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -27,10 +24,10 @@ const useLogin = () => {
             if (data.error) {
                 throw new Error(data.error);
             }
-            toast.success('Login successful');
-            localStorage.setItem('auth-user', JSON.stringify(data));
-            setAuthUser(data);
-            navigate('/message')
+            toast.success('Logout successful');
+            localStorage.removeItem('auth-user');
+            setAuthUser({});
+            navigate('/login')
         } catch (error) {
             toast.error(error.message);
         } finally {
@@ -38,16 +35,7 @@ const useLogin = () => {
         }
     };
 
-    return { loading , login };
+    return { loading , logout };
 }
 
-export default useLogin;
-
-function handleInputErrors(email, password) {
-	if (!email || !password) {
-		toast.error("Please fill in all fields");
-		return false;
-	}
-
-	return true;
-}
+export default useLogout;
