@@ -191,14 +191,7 @@ const SignUp = () => {
                             <div className="flex flex-col items-center mb-3">
                                 <button
                                     type="submit"
-                                    style={{
-                                        backgroundColor: 'white',
-                                        color: 'black',
-                                        '--tw-gradient-from': 'white',
-                                        '--tw-gradient-to': 'white',
-                                        backgroundImage: 'none'
-                                    }}
-                                    className="px-6 py-2 font-medium rounded-md shadow hover:bg-gray-100 transition duration-200"
+                                    className="signup-button font-medium rounded-md shadow hover:bg-gray-100 transition duration-200"
                                     disabled={loading}
                                 >
                                     {loading ? (
