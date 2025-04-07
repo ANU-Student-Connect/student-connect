@@ -6,6 +6,7 @@ import Signup from './pages/signup/Signup'
 import QuestionStart from './pages/questions/QuestionStart'
 import QuestionBody from './pages/questions/QuestionBody'
 import QuestionEnd from './pages/questions/QuestionEnd'
+import UserProfile from './pages/userProfile/UserProfile'
 
 import { Toaster } from 'react-hot-toast'
 import Message from "./pages/message/Message";
@@ -22,13 +23,15 @@ function App() {
         {/* <Route path="/questionstart" element={authUser ? <QuestionStart/> : <Navigate to={"/login"}/>}/>
         <Route path="/questionbody" element={authUser ? <QuestionBody/> : <Navigate to={"/login"}/>} />
         <Route path="/questionend" element={authUser ? <QuestionEnd/> : <Navigate to={"/login"}/>} /> */}
-        <Route path='/home' element={<Home />} />
+        <Route path='/' element={<Home />} />
+          <Route path='/home' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/questionstart' element={<QuestionStart />} />
         <Route path='/questionbody' element={<QuestionBody />} />
         <Route path='/questionend' element={<QuestionEnd />} />
         <Route path='/message' element={<Message />} />
+        <Route path='/userprofile' element={<UserProfile/>}/>
       </Routes>
       <Toaster />
     </div>
