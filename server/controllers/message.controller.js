@@ -1,5 +1,6 @@
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
+import mongoose from "mongoose";
 
 export const sendMessage = async (req, res) => { 
     try { 
@@ -61,51 +62,75 @@ export const getMessages = async (req, res) => {
     }
 };
 
-export const getAllMessages = async (req, res) => {
-    const userId = req.user.id;
-
+// Add friend card interface: query all relevant messages of the current user and retrieve the last message corresponding to each friend
+export const getFriendCards = async (req, res) => {
     try {
-        const messages = await Message.findAll({
-            where: {
-                [Op.or]: [
-                    { sender_id: userId },
-                    { receiver_id: userId },
-                ],
+        const userId = req.user._id;
+        // Process using aggregation pipeline:
+        const friendCards = await Message.aggregate([
+            {
+                // Filter out messages where the current user is the sender or receiver
+                $match: {
+                    $or: [
+                        { senderId: mongoose.Types.ObjectId(userId) },
+                        { receiverId: mongoose.Types.ObjectId(userId) }
+                    ]
+                }
             },
-            include: [
-                {
-                    model: User,
-                    as: 'sender',
-                    attributes: ['id', 'username'],
-                },
-                {
-                    model: User,
-                    as: 'receiver',
-                    attributes: ['id', 'username'],
-                },
-            ],
-            order: { createdAt: 'DESC' },
-            group: ['sender_id', 'receiver_id'], // group by conversation
-        });
-
-// convert to a more readable format
-        const formattedMessages = messages.reduce((acc, message) => {
-            const key = `${message.sender_id}-${message.receiver_id}`;
-            if (!acc[key]) {
-                acc[key] = {
-                    participants: [
-                        message.sender_id === userId ? message.sender : message.receiver,
-                        message.sender_id === userId ? message.receiver : message.sender,
-                    ],
-                    messages: [],
-                };
+            {
+                // Add field friendId: if the current user is the sender, friendId is receiverId, otherwise it is senderId
+                $addFields: {
+                    friendId: {
+                        $cond: [
+                            { $eq: ["$senderId", mongoose.Types.ObjectId(userId)] },
+                            "$receiverId",
+                            "$senderId"
+                        ]
+                    }
+                }
+            },
+            {
+                // Sort in descending order by time, making sure the latest message is at the front
+                $sort: { createdAt: -1 }
+            },
+            {
+                // Group by friendId, take the first record in each group (i.e. the latest message)
+                $group: {
+                    _id: "$friendId",
+                    lastMessage: { $first: "$message" },
+                    lastMessageTime: { $first: "$createdAt" },
+                    lastSenderId: { $first: "$senderId" },
+                    lastReceiverId: { $first: "$receiverId" }
+                }
+            },
+            {
+                // Associated query User collection to get friend information (such as email or name)
+                $lookup: {
+                    from: "users", // Note: collection The name is usually the lowercase plural form of the model name
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "friend"
+                }
+            },
+            {
+                $unwind: "$friend"
+            },
+            {
+                // Final output of required fields
+                $project: {
+                    _id: 0,
+                    friendId: "$_id",
+                    friendName: "$friend.email",
+                    lastMessage: 1,
+                    lastMessageTime: 1,
+                    lastSenderId: 1,
+                    lastReceiverId: 1
+                }
             }
-            acc[key].messages.push(message);
-            return acc;
-        }, {});
-
-        res.status(200).json({ data: Object.values(formattedMessages) });
+        ]);
+        res.status(200).json(friendCards);
     } catch (error) {
-        console.error('Error in getAllMessages:', error.message);
-        res.status(500).json({ error: 'Server internal error' }); }
+        console.error("Error in getFriendCards: ", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
 };

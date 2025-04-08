@@ -1,16 +1,14 @@
 import express from 'express';
+import { getMessages, sendMessage, getFriendCards } from '../controllers/message.controller.js';
 import protectRoute from '../middleware/protectRoute.js';
-import {
-    sendMessage, // Send message
-    getMessages, // Get all messages (need to be extended)
-} from '../controllers/message.controller.js';
 
 const router = express.Router();
 
-// Get all messages of the current user (need authentication)
+// Get all messages between a certain user
 router.get('/:id', protectRoute, getMessages);
-
-// Send a new message (need authentication)
+// Send message interface
 router.post('/send/:id', protectRoute, sendMessage);
+// Add friend card interface to get the latest message records between the current user and each friend
+router.get('/friend-cards', protectRoute, getFriendCards);
 
 export default router;
