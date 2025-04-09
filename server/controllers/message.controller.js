@@ -40,24 +40,33 @@ export const sendMessage = async (req, res) => {
     }
 };
 
-export const getMessages = async (req, res) => { 
-    try { 
-        const { id: userToChatId } = req.params;
-        const senderId = req.user._id;
+// Get all messages between the current user and the specified friend, and return a structure that is easy to display on the front end
+export const getMessages = async (req, res) => {
+    try {
+        const { id: friendId } = req.params; // Here, friendId is the friend id passed in after clicking the friend card
+        const currentUserId = req.user._id;
 
-        const conversation = await Conversation.findOne({
-            participants: { $all: [senderId, userToChatId] },
-        }).populate("messages"); // not refs, but actual messages
+        // Query all messages between the current user and friends, sorted in ascending order by creation time
+        const messages = await Message.find({
+            $or: [
+                { senderId: currentUserId, receiverId: friendId },
+                { senderId: friendId, receiverId: currentUserId }
+            ]
+        }).sort({ createdAt: 1 }).lean(); // Use lean() to convert to pure JS object for subsequent data processing
 
-        if (!conversation) { 
-            return res.status(200).json([]);
-        }
+        // Add a side field to each message: if the message comes from the current user, mark it as "right", otherwise mark it as "left"
+        const chatMessages = messages.map(msg => ({
+            ...msg,
+            side: msg.senderId.toString() === currentUserId.toString() ? "right" : "left"
+        }));
 
-        const messages = conversation.messages;
-        res.status(200).json(messages);
-
-    } catch (error) { 
-        console.log("Error in getMessages controller: ", error.message);
+        // The returned data structure also carries the current user id, and the front end can determine the display style based on the id
+        res.status(200).json({
+            currentUserId,
+            messages: chatMessages
+        });
+    } catch (error) {
+        console.error("Error in getMessages controller: ", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -120,7 +129,7 @@ export const getFriendCards = async (req, res) => {
                 $project: {
                     _id: 0,
                     friendId: "$_id",
-                    friendName: "$friend.email",
+                    friendName: "$friend.name",
                     lastMessage: 1,
                     lastMessageTime: 1,
                     lastSenderId: 1,
