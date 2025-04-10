@@ -1,6 +1,7 @@
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
 import mongoose from "mongoose";
+import User from "../models/user.model.js";
 
 export const sendMessage = async (req, res) => { 
     try { 
@@ -140,6 +141,26 @@ export const getFriendCards = async (req, res) => {
         res.status(200).json(friendCards);
     } catch (error) {
         console.error("Error in getFriendCards: ", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Interface for getting friend details
+export const getFriendInfo = async (req, res) => {
+    try {
+        const { id: friendId } = req.params; // Get friend's id from URL parameters
+
+        // Query friend information, you can return only some fields as needed, such as avatar, name, club, major, social media, etc.
+        const friend = await User.findById(friendId)
+            .select('-password'); // Exclude sensitive information such as passwords
+
+        if (!friend) {
+            return res.status(404).json({ message: "Friend not found" });
+        }
+
+        res.status(200).json(friend);
+    } catch (error) {
+        console.error("Error in getFriendInfo:", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
 };
