@@ -1,4 +1,3 @@
-import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
@@ -120,6 +119,7 @@ export const getFriendCards = async (req, res) => {
                     _id: 0,
                     friendId: "$_id",
                     friendName: "$friend.name",
+                    friendAvatar: "$friend.avatar",
                     lastMessage: 1,
                     lastMessageTime: 1,
                     lastSenderId: 1,
