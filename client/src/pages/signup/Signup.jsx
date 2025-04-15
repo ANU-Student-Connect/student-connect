@@ -189,17 +189,12 @@ const SignUp = () => {
 
                             {/* Sign Up Button */}
                             <div className="flex flex-col items-center mb-3">
-                                <button
+                                <input
                                     type="submit"
-                                    className="signup-button font-medium rounded-md shadow hover:bg-gray-100 transition duration-200"
+                                    value={loading ? 'Loading...' : 'Sign Up'}
+                                    className="signup-button font-medium rounded-md shadow hover:bg-gray-100 transition duration-200 cursor-pointer"
                                     disabled={loading}
-                                >
-                                    {loading ? (
-                                        <span className="loading loading-spinner"></span>
-                                    ) : (
-                                        'Sign Up'
-                                    )}
-                                </button>
+                                />
                             </div>
 
                             {/* Already a member? */}
