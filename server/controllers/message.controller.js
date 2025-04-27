@@ -60,73 +60,33 @@ export const getMessages = async (req, res) => {
     }
 };
 
-// Add friend card interface: query all relevant messages of the current user and retrieve the last message corresponding to each friend
 export const getFriendCards = async (req, res) => {
     try {
         const userId = req.user._id;
-        // Process using aggregation pipeline:
-        const friendCards = await Message.aggregate([
-            {
-                // Filter out messages where the current user is the sender or receiver
-                $match: {
-                    $or: [
-                        { senderId: mongoose.Types.ObjectId(userId) },
-                        { receiverId: mongoose.Types.ObjectId(userId) }
-                    ]
-                }
-            },
-            {
-                // Add field friendId: if the current user is the sender, friendId is receiverId, otherwise it is senderId
-                $addFields: {
-                    friendId: {
-                        $cond: [
-                            { $eq: ["$senderId", mongoose.Types.ObjectId(userId)] },
-                            "$receiverId",
-                            "$senderId"
-                        ]
-                    }
-                }
-            },
-            {
-                // Sort in descending order by time, making sure the latest message is at the front
-                $sort: { createdAt: -1 }
-            },
-            {
-                // Group by friendId, take the first record in each group (i.e. the latest message)
-                $group: {
-                    _id: "$friendId",
-                    lastMessage: { $first: "$message" },
-                    lastMessageTime: { $first: "$createdAt" },
-                    lastSenderId: { $first: "$senderId" },
-                    lastReceiverId: { $first: "$receiverId" }
-                }
-            },
-            {
-                // Associated query User collection to get friend information (such as email or name)
-                $lookup: {
-                    from: "users", // Note: collection The name is usually the lowercase plural form of the model name
-                    localField: "_id",
-                    foreignField: "_id",
-                    as: "friend"
-                }
-            },
-            {
-                $unwind: "$friend"
-            },
-            {
-                // Final output of required fields
-                $project: {
-                    _id: 0,
-                    friendId: "$_id",
-                    friendName: "$friend.name",
-                    friendAvatar: "$friend.avatar",
-                    lastMessage: 1,
-                    lastMessageTime: 1,
-                    lastSenderId: 1,
-                    lastReceiverId: 1
-                }
-            }
-        ]);
+        const currentUser = await User.findById(userId).lean();
+
+        if (!currentUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const friendsEmails = currentUser.friends || [];
+
+        // Friend details
+        const friendsInfo = await User.find({ email: { $in: friendsEmails } })
+            .select("email name avatar major club socialMedia interests")
+            .lean();
+
+        // Formalization export
+        const friendCards = friendsInfo.map(friend => ({
+            friendId: friend._id,
+            friendName: friend.name,
+            friendAvatar: friend.avatar,
+            friendMajor: friend.major,
+            friendClub: friend.club,
+            friendSocialMedia: friend.socialMedia,
+            friendInterests: friend.interests
+        }));
+
         res.status(200).json(friendCards);
     } catch (error) {
         console.error("Error in getFriendCards: ", error.message);

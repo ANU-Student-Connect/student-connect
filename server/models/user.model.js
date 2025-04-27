@@ -10,6 +10,39 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 8,
+    },
+    name: {
+        type: String,
+        default: 'Anonymous'
+    },
+    avatar: {
+        type: String,
+        default: ''
+    },
+    club: {
+        type: String,
+        default: ''
+    },
+    socialMedia: {
+        type: String,
+        enum: ["WeChat", "Discord", "Slack", "Facebook"],
+        default: "WeChat"
+    },
+    major: {
+        type: String,
+        default: ""
+    },
+    interests: {
+        type: [String],
+        default: []
+    },
+    friends: {
+        type: [String],
+        default: []
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
     //createdAt, updatedAt
 }, {timestamps: true});

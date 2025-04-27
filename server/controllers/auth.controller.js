@@ -4,8 +4,19 @@ import User from '../models/user.model.js';
 import generateTokenAndSetCookie from '../utils/generateToken.js';
 
 export const signup = async (req, res) => { 
-    try { 
-        const { email, password, confirmedPassword} = req.body;
+    try {
+        const {
+            email,
+            password,
+            confirmedPassword,
+            name,
+            avatar,
+            club,
+            socialMedia,
+            major,
+            interest,
+            friends = [] // 新增，默认为空数组
+        } = req.body;
         if (password !== confirmedPassword) { 
             return res.status(400).json({message: 'Passwords do not match'});
         }
@@ -23,7 +34,15 @@ export const signup = async (req, res) => {
         const newUser = new User({
             email,
             password: hashedPassword,
+            name,
+            avatar,
+            club,
+            socialMedia,
+            major,
+            interest,
+            friends
         });
+
 
 
         if (newUser) { 
