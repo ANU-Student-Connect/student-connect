@@ -1,4 +1,4 @@
-name: Deploy React + Vite to Github Pages
+name: Deploy student connect pages
 
 on:
   workflow_dispatch:
