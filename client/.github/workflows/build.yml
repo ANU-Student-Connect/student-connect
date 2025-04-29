@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: 20
 
+      # Navigate to the backend directory
+      - name: Navigate to backend directory
+        run: cd student-connect/client
+
       # Install Dependencies
       - name: Install Dependencies
         run: npm install
