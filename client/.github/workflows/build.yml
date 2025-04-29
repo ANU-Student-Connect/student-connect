@@ -23,7 +23,7 @@ jobs:
 
       # Navigate to the backend directory
       - name: Navigate to backend directory
-        run: cd student-connect/client
+        run: cd student-connect/server
 
       # Install Dependencies
       - name: Install Dependencies
