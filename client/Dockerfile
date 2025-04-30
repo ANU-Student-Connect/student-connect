@@ -1,5 +1,5 @@
 # Use an official Node.js image as the base image
-FROM node:18-alpine as build
+FROM node:23-alpine-alpine as build
 
 # Set working directory
 RUN mkdir -p /client
