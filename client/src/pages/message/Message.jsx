@@ -8,47 +8,55 @@ import defaultAvatar from '../../assets/pic/defaultavater.png';
 const Message = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [selectedFriend, setSelectedFriend] = useState(null);
-    const [friends, setFriends] = useState([
-        {
-            id: 1,
-            name: 'Anil',
-            status: "April fool's day",
-            time: 'Today, 9:52pm',
-            avatar: defaultAvatar,
-            messageStatus: 'read',
-            unreadCount: 0,
-            lastReplyTime: 'Today, 10:30pm',
-            messages: [
-                { id: 1, text: "Hey, how's it going?", sent: true },
-                { id: 2, text: "Not bad, you?", sent: false },
-            ]
-        },
-        {
-            id: 2,
-            name: 'Friends Forever',
-            status: 'Hahahaha!',
-            time: 'Today, 9:52pm',
-            avatar: defaultAvatar,
-            messageStatus: 'unread',
-            unreadCount: 4,
-            lastReplyTime: 'Today, 9:52pm',
-            messages: [
-                { id: 1, text: "Movie night tonight?", sent: false },
-                { id: 2, text: "Sounds great!", sent: true },
-            ]
-        }
-    ]);
+    const [friends, setFriends] = useState([]);
+
+    function formatTime(isoTime) {
+        if (!isoTime) return '';
+        const date = new Date(isoTime);
+        return date.toLocaleString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+            month: 'short',
+            day: 'numeric'
+        }); // e.g., "Apr 3, 10:25 PM"
+    }
 
     useEffect(() => {
-        fetch("http://localhost:9000/testAPI")
-            .then(res => res.text())
-            .then(res => console.log("API Response:", res))
-            .catch(err => console.error(err));
+        const fetchFriendCards = async () => {
+            try {
+                const response = await fetch("http://localhost:3001/api/messages/friend-cards", {
+                    method: 'GET',
+                    credentials: 'include', // 发送 JWT cookie
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
 
-        fetch("http://localhost:9000/testDB")
-            .then(res => res.text())
-            .then(res => console.log("DB Response:", res))
-            .catch(err => console.error(err));
+                if (!response.ok) {
+                    throw new Error("Failed to fetch friend cards");
+                }
+
+                const data = await response.json();
+
+                const mappedFriends = data.map(friend => ({
+                    id: friend.friendId,
+                    name: friend.friendName,
+                    avatar: friend.friendAvatar || defaultAvatar,
+                    status: friend.lastMessage || "Say hi 👋",
+                    time: formatTime(friend.lastMessageTime),
+                    messageStatus: friend.unreadCount > 0 ? 'unread' : 'read',
+                    unreadCount: friend.unreadCount,
+                    messages: [] // 后续加载
+                }));
+
+                setFriends(mappedFriends);
+            } catch (err) {
+                console.error("Error loading friend cards:", err);
+            }
+        };
+
+        fetchFriendCards();
     }, []);
 
     const toggleProfile = () => {

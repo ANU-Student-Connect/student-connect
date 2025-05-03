@@ -76,16 +76,38 @@ export const getFriendCards = async (req, res) => {
             .select("email name avatar major club socialMedia interests")
             .lean();
 
-        // Formalization export
-        const friendCards = friendsInfo.map(friend => ({
-            friendId: friend._id,
-            friendName: friend.name,
-            friendAvatar: friend.avatar,
-            friendMajor: friend.major,
-            friendClub: friend.club,
-            friendSocialMedia: friend.socialMedia,
-            friendInterests: friend.interests
-        }));
+        // Number of recent messages + number of unread messages
+        const friendCards = await Promise.all(
+            friendsInfo.map(async (friend) => {
+                //Recent news
+                const lastMsg = await Message.findOne({
+                    $or: [
+                        { senderId: userId, receiverId: friend._id },
+                        { senderId: friend._id, receiverId: userId }
+                    ]
+                }).sort({ createdAt: -1 }).lean();
+
+                // Number of unread messages (you can add isRead character judgment, or read receiverId as soon as possible “unread”)
+                const unreadCount = await Message.countDocuments({
+                    senderId: friend._id, receiverId: userId,
+                    isRead: false // Check the model isRead Dial
+                });
+
+                // Formalization export
+                return {
+                    friendId: friend._id,
+                    friendName: friend.name,
+                    friendAvatar: friend.avatar,
+                    friendMajor: friend.major,
+                    friendClub: friend.club,
+                    friendSocialMedia: friend.socialMedia,
+                    friendInterests: friend.interests,
+                    lastMessage: lastMsg ? lastMsg.message : '',
+                    lastMessageTime: lastMsg ? lastMsg.createdAt : '',
+                    unreadCount: unreadCount
+                };
+            })
+        );
 
         res.status(200).json(friendCards);
     } catch (error) {
