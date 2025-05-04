@@ -88,7 +88,8 @@ const Message = () => {
                 messages: data.messages.map((msg) => ({
                     id: msg._id,
                     text: msg.message,
-                    sent: msg.side === "right"  // 控制左右对齐
+                    sent: msg.side === "right",
+                    createdAt: msg.createdAt
                 })),
                 lastReplyTime: data.messages.length > 0
                     ? formatTime(data.messages[data.messages.length - 1].createdAt)
