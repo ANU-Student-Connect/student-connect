@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MoreVertical } from 'lucide-react';
 
 const ChatWindow = ({ onToggleProfile, isProfileOpen, selectedFriend }) => {
+    const [newMessage, setNewMessage] = useState("");
+
     if (!selectedFriend) {
         return (
             <div className="flex-1 flex items-center justify-center">
@@ -9,6 +11,38 @@ const ChatWindow = ({ onToggleProfile, isProfileOpen, selectedFriend }) => {
             </div>
         );
     }
+
+    const handleSend = async () => {
+        if (!newMessage.trim()) return;
+
+        try {
+            const response = await fetch(`http://localhost:3001/api/messages/send/${selectedFriend.id}`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: newMessage })
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to send message");
+            }
+
+            const sentMsg = await response.json();
+
+            // 将新消息追加到当前对话中
+            selectedFriend.messages.push({
+                id: sentMsg._id,
+                text: sentMsg.message,
+                sent: true
+            });
+
+            setNewMessage(""); // 清空输入框
+        } catch (error) {
+            console.error("Error sending message:", error);
+        }
+    };
 
     return (
         <div className="flex-1 flex flex-col">
@@ -38,8 +72,16 @@ const ChatWindow = ({ onToggleProfile, isProfileOpen, selectedFriend }) => {
                     type="text"
                     placeholder="Type your message here..."
                     className="flex-1 border rounded-l-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleSend();
+                    }}
                 />
-                <button className="bg-teal-700 text-white px-6 py-2 rounded-r-full hover:bg-teal-800 transition duration-150">
+                <button
+                    onClick={handleSend}
+                    className="bg-teal-700 text-white px-6 py-2 rounded-r-full hover:bg-teal-800 transition duration-150"
+                >
                     SEND
                 </button>
             </div>
