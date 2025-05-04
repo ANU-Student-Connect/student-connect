@@ -26,6 +26,7 @@ const Message = () => {
         const fetchFriendCards = async () => {
             try {
                 const response = await fetch("http://localhost:3001/api/messages/friend-cards", {
+                    // mode: 'no-cors',
                     method: 'GET',
                     credentials: 'include', // 发送 JWT cookie
                     headers: {
@@ -63,10 +64,43 @@ const Message = () => {
         setIsProfileOpen(prevState => !prevState);
     };
 
-    const handleFriendSelect = (friendId) => {
+    const handleFriendSelect = async (friendId) => {
         const selected = friends.find(friend => friend.id === friendId);
-        setSelectedFriend(selected);
+        if (!selected) return;
+
+        try {
+            const response = await fetch(`http://localhost:3001/api/messages/${friendId}`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch messages");
+            }
+
+            const data = await response.json();
+
+            const updatedSelected = {
+                ...selected,
+                messages: data.messages.map((msg) => ({
+                    id: msg._id,
+                    text: msg.message,
+                    sent: msg.side === "right"  // 控制左右对齐
+                })),
+                lastReplyTime: data.messages.length > 0
+                    ? formatTime(data.messages[data.messages.length - 1].createdAt)
+                    : ""
+            };
+
+            setSelectedFriend(updatedSelected);
+        } catch (error) {
+            console.error("Error loading messages for selected friend:", error);
+        }
     };
+
 
     return (
         <div className="flex flex-col h-screen w-full">
