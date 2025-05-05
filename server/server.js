@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
 
     // 监听前端发送消息事件
     socket.on('send-message', (data) => {
-        console.log('📩 Message sent via socket:', data);
+        console.log('Message sent via socket:', data);
         io.emit('receive-message', data); // 广播给所有客户端（可根据房间优化）
     });
 
@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
     });
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     connectToMongoDB();
     console.log(`Server is running on port ${PORT}`);
 });

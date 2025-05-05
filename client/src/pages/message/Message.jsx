@@ -4,6 +4,9 @@ import Sidebar from '../../components/messages/Sidebar';
 import ChatWindow from '../../components/messages/ChatWindow';
 import UserProfile from '../../components/messages/UserProfile';
 import defaultAvatar from '../../assets/pic/defaultavater.png';
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:3001', { withCredentials: true });
 
 const Message = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -19,16 +22,15 @@ const Message = () => {
             hour12: true,
             month: 'short',
             day: 'numeric'
-        }); // e.g., "Apr 3, 10:25 PM"
+        });
     }
 
     useEffect(() => {
         const fetchFriendCards = async () => {
             try {
                 const response = await fetch("http://localhost:3001/api/messages/friend-cards", {
-                    // mode: 'no-cors',
                     method: 'GET',
-                    credentials: 'include', // 发送 JWT cookie
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                     }
@@ -48,7 +50,7 @@ const Message = () => {
                     time: formatTime(friend.lastMessageTime),
                     messageStatus: friend.unreadCount > 0 ? 'unread' : 'read',
                     unreadCount: friend.unreadCount,
-                    messages: [] // 后续加载
+                    messages: []
                 }));
 
                 setFriends(mappedFriends);
@@ -59,6 +61,35 @@ const Message = () => {
 
         fetchFriendCards();
     }, []);
+
+    // Real time news (transfer) + leaving
+    useEffect(() => {
+        if (!selectedFriend) return;
+
+        const handleReceive = (data) => {
+            if (data.receiverId === selectedFriend.id) {
+                const exists = selectedFriend.messages.some(msg => msg.id === data._id);
+                if (!exists) {
+                    const updated = {
+                        ...selectedFriend,
+                        messages: [
+                            ...selectedFriend.messages,
+                            {
+                                id: data._id,
+                                text: data.message,
+                                sent: false,
+                                createdAt: data.createdAt
+                            }
+                        ]
+                    };
+                    setSelectedFriend(updated);
+                }
+            }
+        };
+
+        socket.on('receive-message', handleReceive);
+        return () => socket.off('receive-message', handleReceive);
+    }, [selectedFriend]);
 
     const toggleProfile = () => {
         setIsProfileOpen(prevState => !prevState);
@@ -102,14 +133,18 @@ const Message = () => {
         }
     };
 
-
     return (
         <div className="flex flex-col h-screen w-full">
             <Header currentPage="messages" />
             <div className="flex-1 flex overflow-hidden">
                 <Sidebar friends={friends} onFriendSelect={handleFriendSelect} />
                 <main className="flex-1 flex">
-                    <ChatWindow onToggleProfile={toggleProfile} isProfileOpen={isProfileOpen} selectedFriend={selectedFriend} />
+                    <ChatWindow
+                        key={selectedFriend?.id}  // ✅ 关键：保证切换好友时 socket useEffect 正常更新
+                        onToggleProfile={toggleProfile}
+                        isProfileOpen={isProfileOpen}
+                        selectedFriend={selectedFriend}
+                    />
                     <UserProfile isOpen={isProfileOpen} />
                 </main>
             </div>
