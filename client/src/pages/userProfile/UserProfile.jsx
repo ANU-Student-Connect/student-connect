@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import useProfile from "../../hooks/useProfile";
 import { FaFacebook, FaInstagram, FaDiscord, FaCamera } from "react-icons/fa";
 import Modal from "react-modal";
 import DefaultAvater from "../../assets/pic/defaultavater.png";
@@ -6,6 +7,7 @@ import DefaultAvater from "../../assets/pic/defaultavater.png";
 Modal.setAppElement("#root");
 
 const UserProfile = () => {
+    // const { fetchUserProfile, editUserProfile } = useProfile();
     // This is temporary user data, it will be replaced with API data later.
     const [user, setUser] = useState({
         avatar: DefaultAvater,
@@ -24,26 +26,44 @@ const UserProfile = () => {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [image, setImage] = useState(DefaultAvater); // Default avatar
 
+     // Commented out data fetching logic
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const userData = await fetchUserProfile();
+    //             if (userData) {
+    //                 setUser(userData);  // Set the fetched user data
+    //                 setEditUser(userData);  // Initialize editUser with fetched data
+    //             } else {
+    //                 setError("User data is not available");
+    //             }
+    //         } catch (err) {
+    //             setError("Error fetching user profile data");
+    //         }
+    //     };
+    //     fetchData();
+    // }, [fetchUserProfile]);
+
+    // Commented out save functionality
+    const handleSave = async () => {
+        try {
+            // setUser(editUser); // Temporarily update user with edited data
+            // const response = await editUserProfile(editUser);  // Update user profile via API
+            // if (response.status === 200) {
+            //     setIsEditing(false);  // Close edit mode on success
+            // }
+        } catch (error) {
+            console.error("Error updating user data:", error);
+        }
+    };
+
+
     // Triggered when a field value changes
     const handleChange = (e) => {
         setEditUser({ ...editUser, [e.target.name]: e.target.value });
     };
 
-    // Save changes
-    const handleSave = async () => {
-        try {
-            setUser(editUser);
 
-            const response = await axios.put('', editUser);  // Example API endpoint
-            if (response.status === 200) {
-                
-            }
-
-            setIsEditing(false);
-        } catch (error) {
-            console.error("Error updating user data:", error);
-        }
-    };
 
     // Handle image upload
     const handleImageUpload = (event) => {
