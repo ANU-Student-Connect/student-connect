@@ -171,7 +171,7 @@ const categories = [
   { name: "Others", img: Others_u, imgSelected: Others_s, subCategories: othersSubCategories },
 ];
 
-// 确保categories_next在使用之前被定义
+// Define the Question component
 const Question = () => {
   // State to store the indices of the selected categories
   const [selectedIndices, setSelectedIndices] = useState([]);
@@ -183,14 +183,11 @@ const Question = () => {
 
   // Function to handle the selection of a category
   const handleSelect = (index) => {
-    if (selectedIndices.includes(index)) {
-      setSelectedIndices(selectedIndices.filter((i) => i!== index));
-    } else {
-      setSelectedIndices([...selectedIndices, index]);
-      // 记录选择的主分类
-      if (!showCategoriesNext) {
-        setSelectedMainCategory(categories[index]);
-      }
+    // If the next set of categories is shown, set the selected index and clear the previous selection
+    setSelectedIndices([index]); 
+    // If the next set of categories is not shown, set the selected main category
+    if (!showCategoriesNext) {
+      setSelectedMainCategory(categories[index]);
     }
   };
 
@@ -314,101 +311,3 @@ const Question = () => {
 };
 
 export default Question;
-
-
-/*
-// 生成Sports的子类
-const sportsSubCategories = [
-  { name: "Basketball Gear", img: BasketballGear_u, imgSelected: BasketballGear_s },
-  { name: "Running Shoes", img: RunningShoes_u, imgSelected: RunningShoes_s },
-  { name: "Tennis Equipment", img: TennisEquipment_u, imgSelected: TennisEquipment_s },
-  { name: "Golf Accessories", img: GolfAccessories_u, imgSelected: GolfAccessories_s },
-  { name: "Swimming Gear", img: SwimmingGear_u, imgSelected: SwimmingGear_s },
-  { name: "Yoga Props", img: YogaProps_u, imgSelected: YogaProps_s },
-  { name: "Soccer Apparel", img: SoccerApparel_u, imgSelected: SoccerApparel_s },
-  { name: "Cycling Bikes", img: CyclingBikes_u, imgSelected: CyclingBikes_s }
-];
-
-// 生成Art & Music的子类
-const artMusicSubCategories = [
-  { name: "Paintbrushes & Palettes", img: Paintbrushes_u, imgSelected: Paintbrushes_s },
-  { name: "Guitar Strings", img: GuitarStrings_u, imgSelected: GuitarStrings_s },
-  { name: "Sheet Music", img: SheetMusic_u, imgSelected: SheetMusic_s },
-  { name: "Canvas", img: Canvas_u, imgSelected: Canvas_s },
-  { name: "Drumsticks", img: Drumsticks_u, imgSelected: Drumsticks_s },
-  { name: "Easel", img: Easel_u, imgSelected: Easel_s },
-  { name: "Violin Bows", img: ViolinBows_u, imgSelected: ViolinBows_s },
-  { name: "Art Prints", img: ArtPrints_u, imgSelected: ArtPrints_s }
-];
-
-// 生成Movies的子类
-const moviesSubCategories = [
-  { name: "Action Movies", img: ActionMovies_u, imgSelected: ActionMovies_s },
-  { name: "Comedy Movies", img: ComedyMovies_u, imgSelected: ComedyMovies_s },
-  { name: "Drama Movies", img: DramaMovies_u, imgSelected: DramaMovies_s },
-  { name: "Science Fiction Movies", img: ScienceFictionMovies_u, imgSelected: ScienceFictionMovies_s },
-  { name: "Fantasy Movies", img: FantasyMovies_u, imgSelected: FantasyMovies_s },
-  { name: "Horror Movies", img: HorrorMovies_u, imgSelected: HorrorMovies_s },
-  { name: "Animated Movies", img: AnimatedMovies_u, imgSelected: AnimatedMovies_s },
-  { name: "Documentary Movies", img: DocumentaryMovies_u, imgSelected: DocumentaryMovies_s }
-];
-
-// 生成Travel的子类
-const travelSubCategories = [
-  { name: "Backpacks", img: Backpacks_u, imgSelected: Backpacks_s },
-  { name: "Travel Guides", img: TravelGuides_u, imgSelected: TravelGuides_s },
-  { name: "Luggage", img: Luggage_u, imgSelected: Luggage_s },
-  { name: "Passport Holders", img: PassportHolders_u, imgSelected: PassportHolders_s },
-  { name: "Travel Cameras", img: TravelCameras_u, imgSelected: TravelCameras_s },
-  { name: "Airplane Accessories", img: AirplaneAccessories_u, imgSelected: AirplaneAccessories_s },
-  { name: "Travel Maps", img: TravelMaps_u, imgSelected: TravelMaps_s },
-  { name: "Souvenirs", img: Souvenirs_u, imgSelected: Souvenirs_s }
-];
-
-// 生成Reading的子类
-const readingSubCategories = [
-  { name: "Fiction Books", img: FictionBooks_u, imgSelected: FictionBooks_s },
-  { name: "Non - Fiction Books", img: NonFictionBooks_u, imgSelected: NonFictionBooks_s },
-  { name: "Manga", img: Manga_u, imgSelected: Manga_s },
-  { name: "Graphic Novels", img: GraphicNovels_u, imgSelected: GraphicNovels_s },
-  { name: "Textbooks", img: Textbooks_u, imgSelected: Textbooks_s },
-  { name: "E - Readers", img: EReaders_u, imgSelected: EReaders_s },
-  { name: "Bookmarks", img: Bookmarks_u, imgSelected: Bookmarks_s },
-  { name: "Reading Lights", img: ReadingLights_u, imgSelected: ReadingLights_s }
-];
-
-// 生成Health的子类
-const healthSubCategories = [
-  { name: "Fitness Equipment", img: FitnessEquipment_u, imgSelected: FitnessEquipment_s },
-  { name: "Vitamins & Supplements", img: Vitamins_u, imgSelected: Vitamins_s },
-  { name: "Yoga Mats", img: YogaMats_u, imgSelected: YogaMats_s },
-  { name: "Massage Tools", img: MassageTools_u, imgSelected: MassageTools_s },
-  { name: "First Aid Kits", img: FirstAidKits_u, imgSelected: FirstAidKits_s },
-  { name: "Health Trackers", img: HealthTrackers_u, imgSelected: HealthTrackers_s },
-  { name: "Sports Bras", img: SportsBras_u, imgSelected: SportsBras_s },
-  { name: "Water Bottles", img: WaterBottles_u, imgSelected: WaterBottles_s }
-];
-
-// 生成Food的子类
-const foodSubCategories = [
-  { name: "Bakery Items", img: BakeryItems_u, imgSelected: BakeryItems_s },
-  { name: "Fruits", img: Fruits_u, imgSelected: Fruits_s },
-  { name: "Vegetables", img: Vegetables_u, imgSelected: Vegetables_s },
-  { name: "Meat & Poultry", img: MeatPoultry_u, imgSelected: MeatPoultry_s },
-  { name: "Dairy Products", img: DairyProducts_u, imgSelected: DairyProducts_s },
-  { name: "Seafood", img: Seafood_u, imgSelected: Seafood_s },
-  { name: "Snacks", img: Snacks_u, imgSelected: Snacks_s },
-  { name: "Beverages", img: Beverages_u, imgSelected: Beverages_s }
-];
-
-// 生成Others的子类
-const othersSubCategories = [
-  { name: "Hobbies - DIY", img: HobbiesDIY_u, imgSelected: HobbiesDIY_s },
-  { name: "Collectibles", img: Collectibles_u, imgSelected: Collectibles_s },
-  { name: "Pet Supplies", img: PetSupplies_u, imgSelected: PetSupplies_s },
-  { name: "Office Supplies", img: OfficeSupplies_u, imgSelected: OfficeSupplies_s },
-  { name: "Home Decor", img: HomeDecor_u, imgSelected: HomeDecor_s },
-  { name: "Stationery", img: Stationery_u, imgSelected: Stationery_s },
-  { name: "Tools", img: Tools_u, imgSelected: Tools_s },
-  { name: "Party Supplies", img: PartySupplies_u, imgSelected: PartySupplies_s }
-];*/
