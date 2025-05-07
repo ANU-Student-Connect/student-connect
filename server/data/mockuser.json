@@ -20,56 +20,25 @@
     },
     "interests": {
         "categories": [{
-            "category_id": "interest001",
-            "subcategories": [
-            {
-                "subcategory_id": "interestsub001001",
-                "strength": 5
+                "category_id": "interest001",
+                "subcategories": ["interestsub001001", "interestsub001002", "interestsub001003", "interestsub001004"]
             },
             {
-                "subcategory_id": "interestsub001002",
-                "strength": 4
+                "category_id": "interest005",
+                "subcategories": ["interestsub005001", "interestsub005002"]
             },
             {
-                "subcategory_id": "interestsub001003",
-                "strength": 3
+                "category_id": "interest008",
+                "subcategories": ["interestsub008001", "interestsub008002"]
             }
             ]
         },
-        {
-            "category_id": "interest002",
-            "subcategories": [
-            {
-                "subcategory_id": "interestsub002002",
-                "strength": 5
-            },
-            {
-                "subcategory_id": "interestsub002003",
-                "strength": 4
-            }
-            ]
-        },
-        {
-            "category_id": "interest003",
-            "subcategories": [
-            {
-                "subcategory_id": "interestsub003001",
-                "strength": 5
-            },
-            {
-                "subcategory_id": "interestsub003002",
-                "strength": 4
-            }
-            ]
-        }
-        ],
-        "matches": {
-            "matched_users": ["u1002", "u1003"],
-            "compatibility_score": 85,
-            "matched_interests": ["interest001", "interest005", "interest008"],
-            "created_at": "2025-01-15T14:37:22Z",
-            "status": "active"
-        }
+    "matches": {
+        "matched_users": ["u1002", "u1003"],
+        "compatibility_score": 85,
+        "matched_interests": ["interest001", "interest005", "interest008"],
+        "created_at": "2025-01-15T14:37:22Z",
+        "status": "active"
     }
     },
     {
@@ -92,54 +61,26 @@
         "last_active": "2025-04-30T09:23:41Z"
     },
     "interests": {
-        "categories": [
-            {
-            "category_id": "interest001",
-            "subcategories": [
-                {
-                "subcategory_id": "interestsub001001",
-                "strength": 5
-                },
-                {
-                "subcategory_id": "interestsub001004",
-                "strength": 5
-                }
-            ]
+        "categories": [{
+                "category_id": "interest001",
+                "subcategories": ["interestsub001001", "interestsub001002", "interestsub001003", "interestsub001004"]
             },
             {
-            "category_id": "interest005",
-            "subcategories": [
-                {
-                "subcategory_id": "interestsub005001",
-                "strength": 4
-                },
-                {
-                "subcategory_id": "interestsub005002",
-                "strength": 5
-                }
-            ]
+                "category_id": "interest005",
+                "subcategories": ["interestsub005001", "interestsub005002"]
             },
             {
-            "category_id": "interest008",
-            "subcategories": [
-                {
-                "subcategory_id": "interestsub008001",
-                "strength": 5
-                },
-                {
-                "subcategory_id": "interestsub008002",
-                "strength": 4
-                }
-            ]
+                "category_id": "interest008",
+                "subcategories": ["interestsub008001", "interestsub008002"]
             }
-        ],
-        "matches": {
-        "matched_users": ["u1001", "u1003"],
-        "compatibility_score": 82,
-        "matched_interests": ["interest001", "interest005", "interest008"],
-        "created_at": "2025-01-15T14:37:22Z",
-        "status": "active"
-        }
+            ]
+        },
+    "matches": {
+    "matched_users": ["u1001", "u1003"],
+    "compatibility_score": 82,
+    "matched_interests": ["interest001", "interest005", "interest008"],
+    "created_at": "2025-01-15T14:37:22Z",
+    "status": "active"
     }
     },
     {
@@ -162,51 +103,20 @@
         "last_active": "2025-04-28T21:12:56Z"
         },
     "interests": {
-    "categories": [
-        {
-        "category_id": "interest001",
-        "subcategories": [
-            {
-            "subcategory_id": "interestsub001001",
-            "strength": 4
+        "categories": [{
+                "category_id": "interest001",
+                "subcategories": ["interestsub001001", "interestsub001002", "interestsub001003", "interestsub001004"]
             },
             {
-            "subcategory_id": "interestsub001003",
-            "strength": 5
-            }
-        ]
-        },
-        {
-        "category_id": "interest005",
-        "subcategories": [
-            {
-            "subcategory_id": "interestsub005001",
-            "strength": 5
+                "category_id": "interest005",
+                "subcategories": ["interestsub005001", "interestsub005002"]
             },
             {
-            "subcategory_id": "interestsub005003",
-            "strength": 5
+                "category_id": "interest008",
+                "subcategories": ["interestsub008001", "interestsub008002"]
             }
-        ]
-        },
-        {
-        "category_id": "interest008",
-        "subcategories": [
-            {
-            "subcategory_id": "interestsub008003",
-            "strength": 4
-            }
-        ]
+            ]
         }
-    ],
-    "matches": {
-        "matched_users": ["u1001", "u1002"],
-        "compatibility_score": 78,
-        "matched_interests": ["interest001", "interest005", "interest008"],
-        "created_at": "2025-02-20T09:45:33Z",
-        "status": "active"
-    }
-    }
     }
     ],
 "interests": {

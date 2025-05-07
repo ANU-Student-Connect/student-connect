@@ -1,4 +1,6 @@
+import { validationResult } from 'express-validator';
 import User from '../models/user.model.js';
+import Interest from '../models/interest.model.js';
 
 export const getFriendSuggestions = async (req, res) => {
     try {

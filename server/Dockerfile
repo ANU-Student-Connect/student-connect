@@ -1,5 +1,5 @@
 # Use an official Node.js image as the base image
-FROM node:18-alpine 
+FROM node:23-alpine-slim
 
 # Set working directory
 RUN mkdir -p /server
