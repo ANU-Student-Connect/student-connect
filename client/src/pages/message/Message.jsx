@@ -70,19 +70,19 @@ const Message = () => {
             if (data.receiverId === selectedFriend.id) {
                 const exists = selectedFriend.messages.some(msg => msg.id === data._id);
                 if (!exists) {
-                    const updated = {
-                        ...selectedFriend,
+                    setSelectedFriend(prev => ({
+                        ...prev,
                         messages: [
-                            ...selectedFriend.messages,
+                            ...prev.messages,
                             {
                                 id: data._id,
                                 text: data.message,
-                                sent: false,
+                                // 发送者不是好友，就是自己——右侧
+                                sent: data.senderId !== selectedFriend.id,
                                 createdAt: data.createdAt
                             }
                         ]
-                    };
-                    setSelectedFriend(updated);
+                    }));
                 }
             }
         };
@@ -145,7 +145,7 @@ const Message = () => {
                         isProfileOpen={isProfileOpen}
                         selectedFriend={selectedFriend}
                     />
-                    <UserProfile isOpen={isProfileOpen} />
+                    <UserProfile isOpen={isProfileOpen} selectedFriend={selectedFriend} />
                 </main>
             </div>
         </div>
