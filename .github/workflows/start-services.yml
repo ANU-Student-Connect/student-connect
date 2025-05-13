@@ -17,15 +17,6 @@ jobs:
         with:
           node-version: '20'  
 
-      # Navigate to the backend directory
-      - name: Install backend dependencies
-        run: cd server && npm install
-
-      - name: Start backend service
-        run: cd server && npm run start &
-        env:
-          PORT: 3001  
-      
       - name: Install frontend dependencies
         run: cd client && npm install
 
@@ -34,4 +25,14 @@ jobs:
         env:
           PORT: 3000  
           REACT_APP_API_URL: http://localhost:3001 
+          
+      - name: Install backend dependencies
+        run: cd server && npm install
+
+      - name: Start backend service
+        run: cd server && npm run start &
+        env:
+          PORT: 3001  
+      
+
 
