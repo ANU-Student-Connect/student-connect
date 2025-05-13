@@ -40,6 +40,46 @@ import Drone_u from "../../assets/icons/category/drone_b.png";
 import Drone_s from "../../assets/icons/category/drone_w.png";
 import Digital_camera_u from "../../assets/icons/category/camera_b.png";
 import Digital_camera_s from "../../assets/icons/category/camera_w.png";
+import Football_u from "../../assets/icons/sports/football.png";
+import Volleyball_u from "../../assets/icons/sports/volleyball.png";
+import Baseball_u from "../../assets/icons/sports/baseball.png";
+import Soccer_u from "../../assets/icons/sports/soccer.png";
+import Tennis_u from "../../assets/icons/sports/tennis.png";
+import Golf_u from "../../assets/icons/sports/golf.png";
+import Swimming_u from "../../assets/icons/sports/swimming.png";
+import Yoga_u from "../../assets/icons/sports/yoga.png";
+import Violin_u from "../../assets/icons/art_music/violin.png";
+import Guitar_u from "../../assets/icons/art_music/guitar.png";
+import Singing_u from "../../assets/icons/art_music/singing.png";
+import Drawing_u from "../../assets/icons/art_music/drawing.png";
+import Saxophone_u from "../../assets/icons/art_music/saxophone.png";
+import Dance_u from "../../assets/icons/art_music/dance.png";
+import Piano_u from "../../assets/icons/art_music/piano.png";
+import Photography_u from "../../assets/icons/art_music/photography.png";
+import Sculpture_u from "../../assets/icons/art_music/sculpture.png";
+import Movie_u1 from "../../assets/icons/category/Movie.png";
+import Travel_u1 from "../../assets/icons/category/Travel.png";
+import Reading_u1 from "../../assets/icons/category/BookTypes.png";
+import Health_u1 from "../../assets/icons/category/Health.png";
+import BakeryItems_u from "../../assets/icons/food/bakery.png";
+import Fruits_u from "../../assets/icons/food/fruit.png";
+import Vegetables_u from "../../assets/icons/food/vegetables.png";
+import MeatPoultry_u from "../../assets/icons/food/meat.png";
+import DairyProducts_u from "../../assets/icons/food/daliyproduct.png";
+import Seafood_u from "../../assets/icons/food/seafood.png";
+import Snacks_u from "../../assets/icons/food/snacks.png";
+import Drinks_u from "../../assets/icons/food/drinks.png";
+import Fastfood_u from "../../assets/icons/food/fastfood.png";
+import HobbiesDIY_u from "../../assets/icons/others/hobbies.png";
+import Collectibles_u from "../../assets/icons/others/collections.png";
+import PetSupplies_u from "../../assets/icons/others/petcare.png";
+import OfficeSupplies_u from "../../assets/icons/others/office.png";
+import HomeDecor_u from "../../assets/icons/others/homeimp.png";
+import Cars_u from "../../assets/icons/others/cars.png";
+import Tools_u from "../../assets/icons/others/tools.png";
+import PartySupplies_u from "../../assets/icons/others/party.png";
+import Gardening_u from "../../assets/icons/others/gardening.png";
+
 
 // Define the sub set of categories
 const categories_next = [
@@ -57,40 +97,40 @@ const categories_next = [
 // Define the sub set of Sports
 const sportsSubCategories = [
   { name: "Basketball", img: Sports_u, imgSelected: Sports_s },
-  { name: "Football", img: Sports_u, imgSelected: Sports_s },
-  { name: "Tennis", img: Sports_u, imgSelected: Sports_s },
-  { name: "Golf", img: Sports_u, imgSelected: Sports_s },
-  { name: "Swimming", img: Sports_u, imgSelected: Sports_s },
-  { name: "Yoga", img: Sports_u, imgSelected: Sports_s },
-  { name: "Soccer", img: Sports_u, imgSelected: Sports_s },
-  { name: "Cycling", img: Sports_u, imgSelected: Sports_s },
-  { name: "Volleyball", img: Sports_u, imgSelected: Sports_s },
+  { name: "Football", img: Football_u, imgSelected: Football_u },
+  { name: "Tennis", img: Tennis_u, imgSelected: Tennis_u },
+  { name: "Golf", img: Golf_u, imgSelected: Golf_u },
+  { name: "Swimming", img: Swimming_u, imgSelected: Swimming_u },
+  { name: "Yoga", img: Yoga_u, imgSelected: Yoga_u },
+  { name: "Baseball", img: Baseball_u, imgSelected: Baseball_u },
+  { name: "Soccer", img: Soccer_u, imgSelected: Soccer_u },
+  { name: "Volleyball", img: Volleyball_u, imgSelected: Volleyball_u },
 ];
 
 // Define the sub set of Art & Music
 const artMusicSubCategories = [
-  { name: "Painting", img: Art_Music_u, imgSelected: Art_Music_s },
-  { name: "Guitar", img: Art_Music_u, imgSelected: Art_Music_s },
-  { name: "Singing", img: Art_Music_u, imgSelected: Art_Music_s },
-  { name: "Drawing", img: Art_Music_u, imgSelected: Art_Music_s },
-  { name: "Drums", img: Art_Music_u, imgSelected: Art_Music_s },
-  { name: "Dance", img: Art_Music_u, imgSelected: Art_Music_s },
-  { name: "Piano", img: Art_Music_u, imgSelected: Art_Music_s },
-  { name: "Photography", img: Art_Music_u, imgSelected: Art_Music_s },
-  { name: "Sculpture", img: Art_Music_u, imgSelected: Art_Music_s },
+  { name: "Violin", img: Violin_u, imgSelected: Violin_u },
+  { name: "Guitar", img: Guitar_u, imgSelected: Guitar_u },
+  { name: "Singing", img: Singing_u, imgSelected: Singing_u },
+  { name: "Drawing", img: Drawing_u, imgSelected: Drawing_u },
+  { name: "Saxophone", img: Saxophone_u, imgSelected: Saxophone_u },
+  { name: "Dance", img: Dance_u, imgSelected: Dance_u },
+  { name: "Piano", img: Piano_u, imgSelected: Piano_u },
+  { name: "Photography", img: Photography_u, imgSelected: Photography_u },
+  { name: "Sculpture", img: Sculpture_u, imgSelected: Sculpture_u },
 ];
 
 // Define the sub set of Movies
 const moviesSubCategories = [
-  { name: "Action", img: Movie_u, imgSelected: Movie_s },
-  { name: "Comedy", img: Movie_u, imgSelected: Movie_s },
-  { name: "Drama", img: Movie_u, imgSelected: Movie_s },
-  { name: "Science Fiction", img: Movie_u, imgSelected: Movie_s },
-  { name: "Fantasy", img: Movie_u, imgSelected: Movie_s },
-  { name: "Horror", img: Movie_u, imgSelected: Movie_s },
-  { name: "Animated", img: Movie_u, imgSelected: Movie_s },
-  { name: "Documentary", img: Movie_u, imgSelected: Movie_s },
-  { name: "Thriller", img: Movie_u, imgSelected: Movie_s },
+  { name: "Action", img: Movie_u1, imgSelected: Movie_u1 },
+  { name: "Comedy", img: Movie_u1, imgSelected: Movie_u1 },
+  { name: "Drama", img: Movie_u1, imgSelected: Movie_u1 },
+  { name: "Science Fiction", img: Movie_u1, imgSelected: Movie_u1 },
+  { name: "Fantasy", img: Movie_u1, imgSelected: Movie_u1 },
+  { name: "Horror", img: Movie_u1, imgSelected: Movie_u1 },
+  { name: "Animated", img: Movie_u1, imgSelected: Movie_u1 },
+  { name: "Documentary", img: Movie_u1, imgSelected: Movie_u1 },
+  { name: "Thriller", img: Movie_u1, imgSelected: Movie_u1 },
 ];
 
 // Define the sub set of Travel
@@ -134,29 +174,29 @@ const healthSubCategories = [
 
 // Define the sub set of Food
 const foodSubCategories = [
-  { name: "Italian Cuisine", img: Food_u, imgSelected: Food_s },
-  { name: "Chinese Cuisine", img: Food_u, imgSelected: Food_s },
-  { name: "Mexican Cuisine", img: Food_u, imgSelected: Food_s },
-  { name: "Japanese Cuisine", img: Food_u, imgSelected: Food_s },
-  { name: "Fast Food", img: Food_u, imgSelected: Food_s },
-  { name: "Healthy Food", img: Food_u, imgSelected: Food_s },
-  { name: "Desserts", img: Food_u, imgSelected: Food_s },
-  { name: "Beverages", img: Food_u, imgSelected: Food_s },
-  { name: "Mediterranean Cuisine", img: Food_u, imgSelected: Food_s },
+  { name: "Bakery Items", img: BakeryItems_u, imgSelected: BakeryItems_u },
+  { name: "Fruits", img: Fruits_u, imgSelected: Fruits_u },
+  { name: "Vegetables", img: Vegetables_u, imgSelected: Vegetables_u },
+  { name: "Meat & Poultry", img: MeatPoultry_u, imgSelected: MeatPoultry_u },
+  { name: "Daliy Products", img: DairyProducts_u, imgSelected: DairyProducts_u },
+  { name: "Seafood", img: Seafood_u, imgSelected: Seafood_u },
+  { name: "Snacks", img: Snacks_u, imgSelected: Snacks_u },
+  { name: "Drinks", img: Drinks_u, imgSelected: Drinks_u },
+  { name: "Fast Food", img: Fastfood_u, imgSelected: Fastfood_u },
 ];
 
 // Define the sub set of Others
 const othersSubCategories = [
-  { name: "Hobbies", img: Others_u, imgSelected: Others_s },
-  { name: "Collectibles", img: Others_u, imgSelected: Others_s },
-  { name: "Pet Care", img: Others_u, imgSelected: Others_s },
-  { name: "Office", img: Others_u, imgSelected: Others_s },
-  { name: "Home Improvement", img: Others_u, imgSelected: Others_s },
-  { name: "Stationery", img: Others_u, imgSelected: Others_s },
-  { name: "Tools", img: Others_u, imgSelected: Others_s },
-  { name: "Party", img: Others_u, imgSelected: Others_s },
-  { name: "Gardening", img: Others_u, imgSelected: Others_s },
-];    
+  { name: "Hobbies", img: HobbiesDIY_u, imgSelected: HobbiesDIY_u },
+  { name: "Collectionss", img: Collectibles_u, imgSelected: Collectibles_u },
+  { name: "Pet Care", img: PetSupplies_u, imgSelected: PetSupplies_u },
+  { name: "Office", img: OfficeSupplies_u, imgSelected: OfficeSupplies_u },
+  { name: "Home Improvement", img: HomeDecor_u, imgSelected: HomeDecor_u },
+  { name: "Cars", img: Cars_u, imgSelected: Cars_u },
+  { name: "Tools", img: Tools_u, imgSelected: Tools_u },
+  { name: "Party", img: PartySupplies_u, imgSelected: PartySupplies_u },
+  { name: "Gardening", img: Gardening_u, imgSelected: Gardening_u },
+];
 
 // Define the first set of categories
 const categories = [
@@ -164,9 +204,9 @@ const categories = [
   { name: "Sports", img: Sports_u, imgSelected: Sports_s, subCategories: sportsSubCategories },
   { name: "Art & Music", img: Art_Music_u, imgSelected: Art_Music_s, subCategories: artMusicSubCategories },
   { name: "Movies", img: Movie_u, imgSelected: Movie_s, subCategories: moviesSubCategories },
-  { name: "Travel", img: Travel_u, imgSelected: Travel_s, subCategories: travelSubCategories },
-  { name: "Reading", img: Reading_u, imgSelected: Reading_s, subCategories: readingSubCategories },
-  { name: "Health", img: Health_u, imgSelected: Health_s, subCategories: healthSubCategories },
+  { name: "Travel", img: Travel_u1, imgSelected: Travel_u1, subCategories: travelSubCategories },
+  { name: "Reading", img: Reading_u1, imgSelected: Reading_u1, subCategories: readingSubCategories },
+  { name: "Health", img: Health_u1, imgSelected: Health_u1, subCategories: healthSubCategories },
   { name: "Food", img: Food_u, imgSelected: Food_s, subCategories: foodSubCategories },
   { name: "Others", img: Others_u, imgSelected: Others_s, subCategories: othersSubCategories },
 ];
