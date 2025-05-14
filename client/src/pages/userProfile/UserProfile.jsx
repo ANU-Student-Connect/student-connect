@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useProfile from "../../hooks/useProfile";
+import TopBar from "../../components/basic/TopBar";
 import { FaFacebook, FaInstagram, FaDiscord, FaCamera } from "react-icons/fa";
 import Modal from "react-modal";
 import DefaultAvater from "../../assets/pic/defaultavater.png";
@@ -7,42 +8,38 @@ import DefaultAvater from "../../assets/pic/defaultavater.png";
 Modal.setAppElement("#root");
 
 const UserProfile = () => {
-    // const { fetchUserProfile, editUserProfile } = useProfile();
+    const { fetchUserProfile, editUserProfile } = useProfile();
     // This is temporary user data, it will be replaced with API data later.
-    const [user, setUser] = useState({
-        avatar: DefaultAvater,
-        name: "StudentConnect",
-        email: "StudentConnect@anu.edu.au",
-        phone: "0448098231",
-        about: "TRY TO RESTART AGAIN"
-    });
 
+    const [user, setUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);  // Whether the profile is in editing mode
-    const [editUser, setEditUser] = useState(user); // Stores the modified user info when editing
+    const [editUser, setEditUser] = useState(null); // Stores the modified user info when editing
     // const [loading, setLoading] = useState(true);   // Whether the data is still being fetched
     const [error, setError] = useState(null);  // Holds any error messages
     const [isAvatarOpen, setIsAvatarOpen] = useState(false);
     const [isBasicOpen, setIsBasicOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
-    const [image, setImage] = useState(DefaultAvater); // Default avatar
+    const [image, setImage] = useState(null); // Default avatar
 
      // Commented out data fetching logic
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const userData = await fetchUserProfile();
-    //             if (userData) {
-    //                 setUser(userData);  // Set the fetched user data
-    //                 setEditUser(userData);  // Initialize editUser with fetched data
-    //             } else {
-    //                 setError("User data is not available");
-    //             }
-    //         } catch (err) {
-    //             setError("Error fetching user profile data");
-    //         }
-    //     };
-    //     fetchData();
-    // }, [fetchUserProfile]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userData = await fetchUserProfile();
+                if (userData && userData.profile) {
+                    
+                    setUser(userData);  // Set the fetched user data
+                    setEditUser(userData);  // Initialize editUser with fetched data
+                    setImage(userData.profile.avatar_url)
+                } else {
+                    setError("User data is not available");
+                }
+            } catch (err) {
+                setError("Error fetching user profile data");
+            }
+        };
+        fetchData();
+    }, []);
 
     // Commented out save functionality
     const handleSave = async () => {
@@ -83,14 +80,15 @@ const UserProfile = () => {
     }
 
     return (
-        <div className="w-full h-full min-h-screen p-6 bg-white shadow-lg rounded-lg flex flex-col">
-            <div className="text-4xl text-left font-bold pb-4 border-b border-gray-300">
+        <div className="w-full h-full min-h-screen bg-white shadow-lg rounded-lg flex flex-col">
+            <TopBar currentPage="userprofile" />
+            <div className="text-2xl text-left font-bold pt-4 pb-4 pl-4 border-b border-gray-300">
                 Profile
             </div>
             {/* Avatar & basic info */}
             <div className="mt-6 flex items-center space-x-12 pb-4 border-b border-gray-300 relative">
                 <span
-                    className="absolute top-2 right-4 text-blue-600 cursor-pointer hover:text-blue-800"
+                    className="absolute top-2 right-6 font-bold text-blue-600 cursor-pointer hover:text-blue-800"
                     onClick={() => setIsBasicOpen(true)}
                 >
                     Edit
@@ -99,22 +97,22 @@ const UserProfile = () => {
                 <div className="relative w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer"
                     onClick={() => setIsAvatarOpen(true)}
                 >
-                    <img src={image} className="w-full h-full object-cover rounded-full" />
+                    <img src={user?.profile.avatar_url} className="w-full h-full object-cover rounded-full" />
                     <FaCamera className="absolute bottom-0 right-0 text-black cursor-pointer" size={20} />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-semibold">{user.name}</h1>
-                    <p className="text-sm text-gray-500 mt-6">SC ID: {user.phone}</p>
+                    <h1 className="text-2xl font-semibold">{user?.profile.name}</h1>
+                    <p className="text-sm text-gray-500 mt-6">{user?.profile.major}</p>
                     <span className="text-green-600 text-sm mt-4">● Active</span>
-                    <p className="text-gray-700 text-xl font-semibold mt-4 text-center italic">{user.about}</p>
+                    <p className="text-gray-700 text-xl font-semibold mt-4 text-center italic">{user?.profile.bio}</p>
                 </div>
             </div>
 
         
             {/* Details */}
-            <div className="mt-6 pb-4 border-b border-gray-300 flex-grow relative">
+            <div className="mt-6 pb-4 pl-4 border-b border-gray-300 flex-grow relative">
                 <span
-                    className="absolute top-2 right-4 text-blue-600 cursor-pointer hover:text-blue-800"
+                    className="absolute top-2 right-6 font-bold text-blue-600 cursor-pointer hover:text-blue-800"
                     onClick={() => setIsDetailOpen(true)}
                 >
                     Edit
@@ -122,33 +120,33 @@ const UserProfile = () => {
                 <div className="grid grid-cols-3 gap-8">
                     <div className="flex items-center gap-4 max-w-full">
                         <span className="font-medium">UID:</span>
-                        <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">u7608986</span>
+                        <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">{user?.profile.uid}</span>
                     </div>
                     <div className="flex items-center gap-4 max-w-full">
                         <span className="font-medium">Email:</span>
-                        <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">u7708986@anu.edu.au</span>
+                        <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">{user?.email}</span>
                     </div>
                     <div className="flex items-center gap-4 max-w-full">
                         <span className="font-medium">Phone:</span>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">0448098231</span>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.phone}</span>
                     </div>
                     <div className="flex items-center gap-4 max-w-full">
                         <a href="#" className="text-blue-600 hover:text-blue-800">
                             <FaFacebook size={32} />
                         </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">Facebook Link</span>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.facebook}</span>
                     </div>
                     <div className="flex items-center gap-4 max-w-full">
                         <a href="#" className="text-pink-600 hover:text-pink-800">
                             <FaInstagram size={32} />
                         </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">Instagram Link</span>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.instagram}</span>
                     </div>
                     <div className="flex items-center gap-4 max-w-full">
                         <a href="#" className="text-indigo-600 hover:text-indigo-800">
                             <FaDiscord size={32} />
                         </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">Discord Link</span>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.discord}</span>
                     </div>
                 </div>
             </div>
@@ -189,7 +187,7 @@ const UserProfile = () => {
                     type="text"
                     id="username"
                     name="username"
-                    value={editUser.name} // Assuming you're storing the username in `editUser.name`
+                    value={editUser?.profile.name} // Assuming you're storing the username in `editUser.name`
                     onChange={(e) => handleChange(e)}
                     className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                     placeholder="Enter your username"
@@ -202,7 +200,7 @@ const UserProfile = () => {
                 <textarea
                     id="about"
                     name="about"
-                    value={editUser.about} // Assuming you're storing the "About Me" in `editUser.about`
+                    value={editUser?.profile.bio} // Assuming you're storing the "About Me" in `editUser.about`
                     onChange={(e) => handleChange(e)}
                     className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                     placeholder="Tell us something about yourself"
@@ -248,7 +246,7 @@ const UserProfile = () => {
                         type="text"
                         id="phone"
                         name="phone"
-                        value={editUser.phone} 
+                        value={editUser?.profile.phone} 
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                         placeholder="Enter your phone number"
@@ -262,7 +260,7 @@ const UserProfile = () => {
                         type="text"
                         id="facebook"
                         name="facebook"
-                        value={editUser.facebook} // Assuming you're storing Facebook in `editDetails.facebook`
+                        value={editUser?.profile.social_media.facebook} // Assuming you're storing Facebook in `editDetails.facebook`
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                         placeholder="Enter your Facebook username"
@@ -276,7 +274,7 @@ const UserProfile = () => {
                         type="text"
                         id="instagram"
                         name="instagram"
-                        value={editUser.instagram} 
+                        value={editUser?.profile.social_media.instagram} 
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                         placeholder="Enter your Instagram username"
@@ -290,7 +288,7 @@ const UserProfile = () => {
                         type="text"
                         id="discord"
                         name="discord"
-                        value={editUser.discord} 
+                        value={editUser?.profile.social_media.discord} 
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                         placeholder="Enter your Discord username"
