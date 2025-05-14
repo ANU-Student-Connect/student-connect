@@ -3,12 +3,12 @@ import { toast } from 'react-hot-toast';
 import { useAuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const useSignup = () => { 
+const useSignup = () => {
     const [loading, setLoading] = useState(false);
     const { setAuthUser } = useAuthContext();
     const navigate = useNavigate();
 
-    const signup = async ({ email, password, confirmedPassword }) => { 
+    const signup = async ({ firstName, lastName, email, password, confirmedPassword }) => {
         const success = handleInputErrors({ email, password, confirmedPassword })
         if (!success) return;
 
@@ -21,6 +21,8 @@ const useSignup = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    firstName,                        // ← include these
+                    lastName,                         // ← include these
                     email,
                     password,
                     confirmedPassword
@@ -31,8 +33,8 @@ const useSignup = () => {
             if (data.error) {
                 throw new Error(data.error);
             }
-            
-            
+
+
             localStorage.setItem('auth-user', JSON.stringify(data));
 
             setAuthUser(data);
@@ -45,17 +47,17 @@ const useSignup = () => {
         }
     }
 
-    return {loading, signup};
+    return { loading, signup };
 }
 
 export default useSignup;
 
-function handleInputErrors({ email, password, confirmedPassword }) { 
-    if (!email || !password || !confirmedPassword) { 
+function handleInputErrors({ email, password, confirmedPassword }) {
+    if (!email || !password || !confirmedPassword) {
         toast.error('All fields are required');
     }
 
-    if (password !== confirmedPassword) { 
+    if (password !== confirmedPassword) {
         toast.error('Passwords do not match');
         return false;
     }
