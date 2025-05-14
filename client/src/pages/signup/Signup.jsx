@@ -197,14 +197,13 @@ const SignUp = () => {
                     disabled={signingUp}
                   />
                 ) : (
-                  <button
+                  <input
                     type="button"
+                    value={verifying ? 'Verifying…' : 'Verify Email'}
                     onClick={handleVerify}
                     disabled={verifying}
                     className="signup-button font-medium rounded-md shadow hover:bg-gray-100 transition duration-200 cursor-pointer"
-                  >
-                    {verifying ? 'Verifying…' : 'Verify Email'}
-                  </button>
+                  />
                 )}
               </div>
 
