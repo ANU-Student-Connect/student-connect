@@ -2,8 +2,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import useSignup from '../../hooks/useSignup';
 
-/// CHECK useSignup.jsx in hooks and make any changes necessary if changes happen
-
 const SignUp = () => {
   const navigate = useNavigate();
   const { loading: signingUp, signup } = useSignup();
