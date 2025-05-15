@@ -23,6 +23,7 @@ const useLogin = () => {
                 },
                 body: JSON.stringify({ email, password }),
             });
+            
             const data = await res.json();
             if (data.error) {
                 throw new Error(data.error);
@@ -30,7 +31,7 @@ const useLogin = () => {
             toast.success('Login successful');
             localStorage.setItem('auth-user', JSON.stringify(data));
             setAuthUser(data);
-            navigate('/message')
+            navigate('/home');
         } catch (error) {
             toast.error(error.message);
         } finally {

@@ -1,66 +1,74 @@
-import { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { useAuthContext } from '../context/AuthContext';
+// hooks/useSignup.js
+import { useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { useAuthContext } from '../context/AuthContext'
 
-const useSignup = () => { 
-    const [loading, setLoading] = useState(false);
-    const { setAuthUser } = useAuthContext();
+export default function useSignup() {
+  const [loading, setLoading] = useState(false)
+  const { setAuthUser } = useAuthContext()
 
-    const signup = async ({ email, password, confirmedPassword }) => { 
-        const success = handleInputErrors({ email, password, confirmedPassword })
-        if (!success) return;
+  const signup = async ({
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmedPassword,
+  }) => {
+    setLoading(true)
 
-        setLoading(true);
-
-        try {
-            const res = await fetch('/api/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    confirmedPassword
-                }),
-            });
-
-            const data = await res.json();
-            if (data.error) {
-                throw new Error(data.error);
-            }
-            
-            
-            localStorage.setItem('auth-user', JSON.stringify(data));
-
-            setAuthUser(data);
-
-        } catch (error) {
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
-        }
+    // 1) Front-end validation
+    if (!firstName || !lastName || !email || !password || !confirmedPassword) {
+      const msg = 'All fields are required'
+      toast.error(msg)
+      setLoading(false)
+      throw new Error(msg)
     }
-
-    return {loading, signup};
-}
-
-export default useSignup;
-
-function handleInputErrors({ email, password, confirmedPassword }) { 
-    if (!email || !password || !confirmedPassword) { 
-        toast.error('All fields are required');
+    if (password !== confirmedPassword) {
+      const msg = 'Passwords do not match'
+      toast.error(msg)
+      setLoading(false)
+      throw new Error(msg)
     }
-
-    if (password !== confirmedPassword) { 
-        toast.error('Passwords do not match');
-        return false;
-    }
-
     if (password.length < 8) {
-        toast.error('Password must be at least 8 characters');
-        return false
+      const msg = 'Password must be at least 8 characters'
+      toast.error(msg)
+      setLoading(false)
+      throw new Error(msg)
     }
 
-    return true;
+    try {
+      // 2) Call your API
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        credentials: 'include',                // ensure cookies & CORS work
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          password,
+          confirmedPassword,
+        }),
+      })
+
+      const data = await res.json()
+
+      // 3) Bubble up server errors
+      if (!res.ok) {
+        const msg = data.message || 'Signup failed'
+        toast.error(msg)
+        throw new Error(msg)
+      }
+
+      // 4) Success: you can store & update context here
+      localStorage.setItem('auth-user', JSON.stringify(data))
+      setAuthUser(data)
+
+      return data
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { signup, loading }
 }

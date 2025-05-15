@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+    },
     email: {
         type: String,
         required: true,
@@ -11,42 +19,16 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 8,
     },
-    name: {
-        type: String,
-        default: 'Anonymous'
+    isVerified: {
+        type: Boolean,
+        default: false,
     },
-    avatar: {
-        type: String,
-        default: ''
-    },
-    club: {
-        type: String,
-        default: ''
-    },
-    socialMedia: {
-        type: String,
-        enum: ["WeChat", "Discord", "Slack", "Facebook"],
-        default: "WeChat"
-    },
-    major: {
-        type: String,
-        default: ""
-    },
-    interests: {
-        type: [String],
-        default: []
-    },
-    friends: {
-        type: [String],
-        default: []
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+    resetPasswordToken: String,
+    resetPasswordExpiresAt: Date,
+    verificationToken: String,
+    verificationTokenExpiresAt: Date
     //createdAt, updatedAt
 }, {timestamps: true});
 
-const User = mongoose.model("User", userSchema);
-
+export const User = mongoose.model("User", userSchema);
 export default User;
