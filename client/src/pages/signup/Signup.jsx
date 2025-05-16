@@ -2,8 +2,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import useSignup from '../../hooks/useSignup';
 
-/// CHECK useSignup.jsx in hooks and make any changes necessary if changes happen
-
 const SignUp = () => {
   const navigate = useNavigate();
   const { loading: signingUp, signup } = useSignup();
@@ -199,14 +197,13 @@ const SignUp = () => {
                     disabled={signingUp}
                   />
                 ) : (
-                  <button
+                  <input
                     type="button"
+                    value={verifying ? 'Verifying…' : 'Verify Email'}
                     onClick={handleVerify}
                     disabled={verifying}
                     className="signup-button font-medium rounded-md shadow hover:bg-gray-100 transition duration-200 cursor-pointer"
-                  >
-                    {verifying ? 'Verifying…' : 'Verify Email'}
-                  </button>
+                  />
                 )}
               </div>
 
