@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import useProfile from "../../hooks/useProfile";
 import TopBar from "../../components/basic/TopBar";
-import { FaFacebook, FaInstagram, FaDiscord, FaCamera } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaDiscord, FaCamera, FaSlack } from "react-icons/fa";
 import Modal from "react-modal";
 import DefaultAvater from "../../assets/pic/defaultavater.png";
 
 Modal.setAppElement("#root");
 
 const UserProfile = () => {
-    const { fetchUserProfile, editUserProfile } = useProfile();
-    // This is temporary user data, it will be replaced with API data later.
-
+    const { fetchUserProfile, editUserProfile } = useProfile();  
     const [user, setUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);  // Whether the profile is in editing mode
     const [editUser, setEditUser] = useState(null); // Stores the modified user info when editing
-    // const [loading, setLoading] = useState(true);   // Whether the data is still being fetched
+    const [loading, setLoading] = useState(true);   // Whether the data is still being fetched
     const [error, setError] = useState(null);  // Holds any error messages
     const [isAvatarOpen, setIsAvatarOpen] = useState(false);
     const [isBasicOpen, setIsBasicOpen] = useState(false);
@@ -27,7 +25,7 @@ const UserProfile = () => {
             try {
                 const userData = await fetchUserProfile();
                 if (userData && userData.profile) {
-                    
+                    setLoading(false);
                     setUser(userData);  // Set the fetched user data
                     setEditUser(userData);  // Initialize editUser with fetched data
                     setImage(userData.profile.avatar_url)
@@ -44,11 +42,11 @@ const UserProfile = () => {
     // Commented out save functionality
     const handleSave = async () => {
         try {
-            // setUser(editUser); // Temporarily update user with edited data
-            // const response = await editUserProfile(editUser);  // Update user profile via API
-            // if (response.status === 200) {
-            //     setIsEditing(false);  // Close edit mode on success
-            // }
+            setUser(editUser); // Temporarily update user with edited data
+            const response = await editUserProfile(editUser);  // Update user profile via API
+            if (response.status === 200) {
+                setIsEditing(false);  // Close edit mode on success
+            }
         } catch (error) {
             console.error("Error updating user data:", error);
         }
@@ -60,8 +58,6 @@ const UserProfile = () => {
         setEditUser({ ...editUser, [e.target.name]: e.target.value });
     };
 
-
-
     // Handle image upload
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -71,9 +67,9 @@ const UserProfile = () => {
         }
     };
 
-    // if (loading) {
-    //     return <div>Loading...</div>; 
-    // }
+    if (loading) {
+        return <div>Loading...</div>; 
+    }
 
     if (error) {
         return <div>{error}</div>; 
@@ -103,7 +99,7 @@ const UserProfile = () => {
                 <div>
                     <h1 className="text-2xl font-semibold">{user?.profile.name}</h1>
                     <p className="text-sm text-gray-500 mt-6">{user?.profile.major}</p>
-                    <span className="text-green-600 text-sm mt-4">● Active</span>
+                    <span className="text-green-600 text-sm mt-4">{user?.profile.uid}</span>
                     <p className="text-gray-700 text-xl font-semibold mt-4 text-center italic">{user?.profile.bio}</p>
                 </div>
             </div>
@@ -119,22 +115,8 @@ const UserProfile = () => {
                 </span>
                 <div className="grid grid-cols-3 gap-8">
                     <div className="flex items-center gap-4 max-w-full">
-                        <span className="font-medium">UID:</span>
-                        <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">{user?.profile.uid}</span>
-                    </div>
-                    <div className="flex items-center gap-4 max-w-full">
                         <span className="font-medium">Email:</span>
                         <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">{user?.email}</span>
-                    </div>
-                    <div className="flex items-center gap-4 max-w-full">
-                        <span className="font-medium">Phone:</span>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-4 max-w-full">
-                        <a href="#" className="text-blue-600 hover:text-blue-800">
-                            <FaFacebook size={32} />
-                        </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.facebook}</span>
                     </div>
                     <div className="flex items-center gap-4 max-w-full">
                         <a href="#" className="text-pink-600 hover:text-pink-800">
@@ -143,10 +125,27 @@ const UserProfile = () => {
                         <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.instagram}</span>
                     </div>
                     <div className="flex items-center gap-4 max-w-full">
+                        <a href="#" className="text-blue-600 hover:text-blue-800">
+                            <FaFacebook size={32} />
+                        </a>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.facebook}</span>
+                    </div>
+                    <div className="flex items-center gap-4 max-w-full">
+                        <span className="font-medium">Phone:</span>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.phone}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-4 max-w-full">
                         <a href="#" className="text-indigo-600 hover:text-indigo-800">
                             <FaDiscord size={32} />
                         </a>
                         <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.discord}</span>
+                    </div>
+                    <div className="flex items-center gap-4 max-w-full">
+                        <a href="#" className="text-indigo-600 hover:text-indigo-800">
+                            <FaSlack size={32} />
+                        </a>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.slack}</span>
                     </div>
                 </div>
             </div>
@@ -194,13 +193,13 @@ const UserProfile = () => {
                 />
                 </div>
 
-                {/* About */}
+                {/* Bio */}
                 <div className="mb-4 w-full">
-                <label htmlFor="about" className="text-sm font-medium text-gray-700">About Me</label>
+                <label htmlFor="bio" className="text-sm font-medium text-gray-700">Bio</label>
                 <textarea
-                    id="about"
-                    name="about"
-                    value={editUser?.profile.bio} // Assuming you're storing the "About Me" in `editUser.about`
+                    id="bio"
+                    name="bio"
+                    value={editUser?.profile.bio} 
                     onChange={(e) => handleChange(e)}
                     className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                     placeholder="Tell us something about yourself"
@@ -292,6 +291,19 @@ const UserProfile = () => {
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                         placeholder="Enter your Discord username"
+                    />
+                    </div>
+                    {/* Slack */}
+                    <div className="mb-4 w-full">
+                    <label htmlFor="slack" className="text-sm font-medium text-gray-700">Slack</label>
+                    <input
+                        type="text"
+                        id="slack"
+                        name="slack"
+                        value={editUser?.profile.social_media.slack} 
+                        onChange={(e) => handleChange(e)}
+                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+                        placeholder="Enter your Slack username"
                     />
                     </div>
                     
