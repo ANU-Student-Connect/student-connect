@@ -172,7 +172,7 @@ const SignUp = () => {
               {step === 'verify' && (
                 <div className="mb-4">
                   <label htmlFor="verificationCode" className="block text-sm mb-1">
-                    Verification Code
+                    Verification Code - Remember to check your spam folder
                   </label>
                   <input
                     id="verificationCode"
