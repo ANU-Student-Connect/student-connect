@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight, Filter, Bell, User, MessageCircle } from 'lucide-react';
+import TopBar from "../../components/basic/TopBar";
 import { Link } from 'react-router-dom';
 
 // Sample user data (would typically come from API/state)
@@ -62,22 +63,8 @@ const StudentCard = ({ user }) => (
 
 const Home = () => {
     return (
-        <div className="bg-gray-50 min-h-screen">
-            {/* Header */}
-            <header className="bg-teal-600 text-white p-4 flex justify-between items-center">
-                <div className="text-lg font-bold">ANU STUDENT CONNECT</div>
-                <div className="flex items-center space-x-4">
-                <Link to="/home" className="text-sm">Home</Link>
-                <Link to="/message" className="text-sm">Message</Link>
-                <Link>
-                    <Bell className="w-5 h-5 cursor-pointer hover:text-blue-500" />
-                </Link>
-                <Link to="/userprofile">
-                    <User className="w-5 h-5 cursor-pointer hover:text-blue-500" />
-                </Link>
-                </div>
-            </header>
-
+        <div className="w-full h-full min-h-screen bg-white shadow-lg rounded-lg flex flex-col">
+             <TopBar currentPage="userprofile" />
             <div className="p-6">
                 {/* Recommendations Section - First Row */}
                 <div className="mb-6">
