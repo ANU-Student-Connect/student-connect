@@ -1,76 +1,98 @@
 import React, { useState, useEffect } from "react";
-import { FaFacebook, FaInstagram, FaDiscord, FaCamera } from "react-icons/fa";
+import useProfile from "../../hooks/useProfile";
+import TopBar from "../../components/basic/TopBar";
+import { FaFacebook, FaInstagram, FaDiscord, FaSlack } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
 import Modal from "react-modal";
 import DefaultAvater from "../../assets/pic/defaultavater.png";
 
 Modal.setAppElement("#root");
 
 const UserProfile = () => {
-    // This is temporary user data, it will be replaced with API data later.
-    const [user, setUser] = useState({
-        avatar: DefaultAvater,
-        name: "StudentConnect",
-        email: "StudentConnect@anu.edu.au",
-        phone: "0448098231",
-        about: "TRY TO RESTART AGAIN"
-    });
-
+    const { fetchUserProfile, editUserProfile, fetchAvatarPool } = useProfile();  
+    const [user, setUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);  // Whether the profile is in editing mode
-    const [editUser, setEditUser] = useState(user); // Stores the modified user info when editing
-    // const [loading, setLoading] = useState(true);   // Whether the data is still being fetched
+    const [editUser, setEditUser] = useState(null); // Stores the modified user info when editing
+    const [avatars, setAvatars] = useState([]);
+    const [selectedAvatar, setSelectedAvatar] = useState(null);
+    const [loading, setLoading] = useState(true);   // Whether the data is still being fetched
     const [error, setError] = useState(null);  // Holds any error messages
     const [isAvatarOpen, setIsAvatarOpen] = useState(false);
     const [isBasicOpen, setIsBasicOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
-    const [image, setImage] = useState(DefaultAvater); // Default avatar
+    const [image, setImage] = useState(null); // Default avatar
+
+     // Commented out data fetching logic
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userData = await fetchUserProfile();
+                if (userData && userData.profile) {
+                    setLoading(false);
+                    setUser(userData);  // Set the fetched user data
+                    setEditUser(userData);  // Initialize editUser with fetched data
+                    setImage(userData.profile.avatar_url);
+                    setSelectedAvatar(userData.profile.avatar_url);
+                } else {
+                    setError("User data is not available");
+                }
+            } catch (err) {
+                setError("Error fetching user profile data");
+            }
+        };
+
+        const loadAvatars = async () => {
+            try {
+                const data = await fetchAvatarPool();
+                setAvatars(data);
+            } catch (err) {
+                console.error("Error fetching avatar pool:", err);
+            }
+        };
+        fetchData();
+        loadAvatars();
+    }, []);
 
     // Triggered when a field value changes
     const handleChange = (e) => {
         setEditUser({ ...editUser, [e.target.name]: e.target.value });
     };
 
-    // Save changes
+    // Commented out save functionality
     const handleSave = async () => {
         try {
-            setUser(editUser);
-
-            const response = await axios.put('', editUser);  // Example API endpoint
+            setUser(editUser); // Temporarily update user with edited data
+            const response = await editUserProfile(editUser);  // Update user profile via API
             if (response.status === 200) {
-                
+                setIsEditing(false);  // Close edit mode on success
             }
-
-            setIsEditing(false);
         } catch (error) {
             console.error("Error updating user data:", error);
         }
     };
 
-    // Handle image upload
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setImage(imageUrl);
-        }
-    };
 
-    // if (loading) {
-    //     return <div>Loading...</div>; 
-    // }
+
+
+
+    if (loading) {
+        return <div>Loading...</div>; 
+    }
 
     if (error) {
         return <div>{error}</div>; 
     }
 
     return (
-        <div className="w-full h-full min-h-screen p-6 bg-white shadow-lg rounded-lg flex flex-col">
-            <div className="text-4xl text-left font-bold pb-4 border-b border-gray-300">
+        <div className="w-full h-full min-h-screen bg-white shadow-lg rounded-lg flex flex-col">
+            <TopBar currentPage="userprofile" />
+            <div className="text-2xl text-left font-bold pt-4 pb-4 pl-4 border-b border-gray-300">
                 Profile
             </div>
             {/* Avatar & basic info */}
             <div className="mt-6 flex items-center space-x-12 pb-4 border-b border-gray-300 relative">
                 <span
-                    className="absolute top-2 right-4 text-blue-600 cursor-pointer hover:text-blue-800"
+                    className="absolute top-2 right-6 font-bold text-blue-600 cursor-pointer hover:text-blue-800"
                     onClick={() => setIsBasicOpen(true)}
                 >
                     Edit
@@ -79,56 +101,59 @@ const UserProfile = () => {
                 <div className="relative w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer"
                     onClick={() => setIsAvatarOpen(true)}
                 >
-                    <img src={image} className="w-full h-full object-cover rounded-full" />
-                    <FaCamera className="absolute bottom-0 right-0 text-black cursor-pointer" size={20} />
+                    <img src={user?.profile.avatar_url} className="w-full h-full object-cover rounded-full" />
+                    <MdEdit className="absolute bottom-0 right-0 text-black hover:text-blue-500 transition duration-200 cursor-pointer" size={20} />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-semibold">{user.name}</h1>
-                    <p className="text-sm text-gray-500 mt-6">SC ID: {user.phone}</p>
-                    <span className="text-green-600 text-sm mt-4">● Active</span>
-                    <p className="text-gray-700 text-xl font-semibold mt-4 text-center italic">{user.about}</p>
+                    <h1 className="text-2xl font-semibold">{user?.profile.name}</h1>
+                    <p className="text-sm text-gray-500 mt-6">{user?.profile.major}</p>
+                    <span className="text-green-600 text-sm mt-4">{user?.profile.uid}</span>
+                    <p className="text-gray-700 text-xl font-semibold mt-4 text-center italic">{user?.profile.bio}</p>
                 </div>
             </div>
 
         
             {/* Details */}
-            <div className="mt-6 pb-4 border-b border-gray-300 flex-grow relative">
+            <div className="mt-6 pb-4 pl-4 border-b border-gray-300 flex-grow relative">
                 <span
-                    className="absolute top-2 right-4 text-blue-600 cursor-pointer hover:text-blue-800"
+                    className="absolute top-2 right-6 font-bold text-blue-600 cursor-pointer hover:text-blue-800"
                     onClick={() => setIsDetailOpen(true)}
                 >
                     Edit
                 </span>
                 <div className="grid grid-cols-3 gap-8">
                     <div className="flex items-center gap-4 max-w-full">
-                        <span className="font-medium">UID:</span>
-                        <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">u7608986</span>
-                    </div>
-                    <div className="flex items-center gap-4 max-w-full">
                         <span className="font-medium">Email:</span>
-                        <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">u7708986@anu.edu.au</span>
-                    </div>
-                    <div className="flex items-center gap-4 max-w-full">
-                        <span className="font-medium">Phone:</span>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">0448098231</span>
-                    </div>
-                    <div className="flex items-center gap-4 max-w-full">
-                        <a href="#" className="text-blue-600 hover:text-blue-800">
-                            <FaFacebook size={32} />
-                        </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">Facebook Link</span>
+                        <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">{user?.email}</span>
                     </div>
                     <div className="flex items-center gap-4 max-w-full">
                         <a href="#" className="text-pink-600 hover:text-pink-800">
                             <FaInstagram size={32} />
                         </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">Instagram Link</span>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.instagram}</span>
                     </div>
+                    <div className="flex items-center gap-4 max-w-full">
+                        <a href="#" className="text-blue-600 hover:text-blue-800">
+                            <FaFacebook size={32} />
+                        </a>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.facebook}</span>
+                    </div>
+                    <div className="flex items-center gap-4 max-w-full">
+                        <span className="font-medium">Phone:</span>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.phone}</span>
+                    </div>
+                    
                     <div className="flex items-center gap-4 max-w-full">
                         <a href="#" className="text-indigo-600 hover:text-indigo-800">
                             <FaDiscord size={32} />
                         </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">Discord Link</span>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.discord}</span>
+                    </div>
+                    <div className="flex items-center gap-4 max-w-full">
+                        <a href="#" className="text-indigo-600 hover:text-indigo-800">
+                            <FaSlack size={32} />
+                        </a>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.slack}</span>
                     </div>
                 </div>
             </div>
@@ -136,20 +161,53 @@ const UserProfile = () => {
             {/* Avatar Modal */}
             <Modal
                 isOpen={isAvatarOpen}
-                onRequestClose={() => setIsAvatarOpen(false)}
+                onRequestClose={() => {
+                    setIsAvatarOpen(false);
+                }}
                 className="bg-white p-8 rounded-lg shadow-lg w-[500px] max-w-lg mx-auto"
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
             >
                 <h2 className="text-xl font-semibold text-center">Avatar</h2>
                 <div className="mt-4 flex flex-col items-center">
                     {/* Avatar Large Image */}
-                    <img src={image} alt="Profile" className="w-64 h-64 object-cover rounded-full border" />
+                    <img src={image} alt="Profile" className="w-48 h-48 object-cover rounded-full border" />
+                    <div className="grid grid-cols-4 gap-10 mt-4 mb-6 max-h-72 overflow-y-auto">
+                        {avatars?.map((avatar) => (
+                        <img
+                            key={avatar}
+                            src={avatar}
+                            alt="Avatar"
+                            className={`w-20 h-20 object-cover rounded-full border-2 cursor-pointer ${selectedAvatar === avatar? 'border-4 border-green-600' : 'border-gray-300'}`}
+                            onClick={() => {
+                            setSelectedAvatar(avatar);
+                            setImage(avatar);
+                            }}
+                        />
+                        ))}
+                    </div>
+                </div>
+                <div className="flex justify-end gap-4">
+                    {/* Cancel */}
+                    <button
+                        onClick={() => {
+                            setIsAvatarOpen(false);
+                            setSelectedAvatar(user?.profile.avatar_url);
+                        }}
+                        className="w-1/2 py-2 text-white bg-gray-400 rounded-md hover:bg-gray-500"
+                    >
+                        Cancel
+                    </button>
                     
-                    {/* Upload */}
-                    <label className="mt-8 px-4 py-2 bg-green-700 text-white rounded cursor-pointer">
-                        Upload
-                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                    </label>
+                    {/* Save */}
+                    <button
+                        onClick={()=>{
+                            editUser.profile.avatar_url = selectedAvatar;
+                            handleSave();
+                        }}
+                        className="w-1/2 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                    >
+                        Save
+                    </button>
                 </div>
             </Modal>
             
@@ -169,20 +227,20 @@ const UserProfile = () => {
                     type="text"
                     id="username"
                     name="username"
-                    value={editUser.name} // Assuming you're storing the username in `editUser.name`
+                    value={editUser?.profile.name} // Assuming you're storing the username in `editUser.name`
                     onChange={(e) => handleChange(e)}
                     className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                     placeholder="Enter your username"
                 />
                 </div>
 
-                {/* About */}
+                {/* Bio */}
                 <div className="mb-4 w-full">
-                <label htmlFor="about" className="text-sm font-medium text-gray-700">About Me</label>
+                <label htmlFor="bio" className="text-sm font-medium text-gray-700">Bio</label>
                 <textarea
-                    id="about"
-                    name="about"
-                    value={editUser.about} // Assuming you're storing the "About Me" in `editUser.about`
+                    id="bio"
+                    name="bio"
+                    value={editUser?.profile.bio} 
                     onChange={(e) => handleChange(e)}
                     className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                     placeholder="Tell us something about yourself"
@@ -228,7 +286,7 @@ const UserProfile = () => {
                         type="text"
                         id="phone"
                         name="phone"
-                        value={editUser.phone} 
+                        value={editUser?.profile.phone} 
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                         placeholder="Enter your phone number"
@@ -242,7 +300,7 @@ const UserProfile = () => {
                         type="text"
                         id="facebook"
                         name="facebook"
-                        value={editUser.facebook} // Assuming you're storing Facebook in `editDetails.facebook`
+                        value={editUser?.profile.social_media.facebook} // Assuming you're storing Facebook in `editDetails.facebook`
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                         placeholder="Enter your Facebook username"
@@ -256,7 +314,7 @@ const UserProfile = () => {
                         type="text"
                         id="instagram"
                         name="instagram"
-                        value={editUser.instagram} 
+                        value={editUser?.profile.social_media.instagram} 
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                         placeholder="Enter your Instagram username"
@@ -270,10 +328,23 @@ const UserProfile = () => {
                         type="text"
                         id="discord"
                         name="discord"
-                        value={editUser.discord} 
+                        value={editUser?.profile.social_media.discord} 
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
                         placeholder="Enter your Discord username"
+                    />
+                    </div>
+                    {/* Slack */}
+                    <div className="mb-4 w-full">
+                    <label htmlFor="slack" className="text-sm font-medium text-gray-700">Slack</label>
+                    <input
+                        type="text"
+                        id="slack"
+                        name="slack"
+                        value={editUser?.profile.social_media.slack} 
+                        onChange={(e) => handleChange(e)}
+                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+                        placeholder="Enter your Slack username"
                     />
                     </div>
                     
