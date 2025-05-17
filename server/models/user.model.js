@@ -26,7 +26,20 @@ const userSchema = new mongoose.Schema({
     resetPasswordToken: String,
     resetPasswordExpiresAt: Date,
     verificationToken: String,
-    verificationTokenExpiresAt: Date
+    verificationTokenExpiresAt: Date,
+    profile: {
+      avatar_url: { type: String, default: '' },
+      uid: { type: String, default: '' },
+      phone: { type: String, default: '' },
+      bio: { type: String, default: '' },
+      major: { type: String, default: '' },
+      social_media: {
+        instagram: { type: String, default: '' },
+        facebook: { type: String, default: '' },
+        discord: { type: String, default: '' },
+        slack:{ type: String, default: '' },
+      }
+    }
     //createdAt, updatedAt
 }, {timestamps: true});
 

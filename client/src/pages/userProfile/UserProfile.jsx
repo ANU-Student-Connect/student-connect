@@ -55,25 +55,41 @@ const UserProfile = () => {
 
     // Triggered when a field value changes
     const handleChange = (e) => {
-        setEditUser({ ...editUser, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        const keys = name.split(".");
+
+        setEditUser(prev => {
+            const newData = { ...prev };
+            let temp = newData;
+
+            for (let i = 0; i < keys.length - 1; i++) {
+                temp[keys[i]] = { ...temp[keys[i]] };
+                temp = temp[keys[i]];
+            }
+
+            temp[keys[keys.length - 1]] = value;
+            return newData;
+        });
     };
+
 
     // Commented out save functionality
     const handleSave = async () => {
         try {
-            setUser(editUser); // Temporarily update user with edited data
-            const response = await editUserProfile(editUser);  // Update user profile via API
-            if (response.status === 200) {
-                setIsEditing(false);  // Close edit mode on success
+            
+            const result = await editUserProfile(editUser); 
+            if (result.success) {
+                setUser(editUser);
+                setIsEditing(false); 
+                setIsAvatarOpen(false);
+                setIsBasicOpen(false);
+                setIsDetailOpen(false);
             }
+
         } catch (error) {
             console.error("Error updating user data:", error);
         }
     };
-
-
-
-
 
     if (loading) {
         return <div>Loading...</div>; 
@@ -105,10 +121,10 @@ const UserProfile = () => {
                     <MdEdit className="absolute bottom-0 right-0 text-black hover:text-blue-500 transition duration-200 cursor-pointer" size={20} />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-semibold">{user?.profile.name}</h1>
-                    <p className="text-sm text-gray-500 mt-6">{user?.profile.major}</p>
-                    <span className="text-green-600 text-sm mt-4">{user?.profile.uid}</span>
-                    <p className="text-gray-700 text-xl font-semibold mt-4 text-center italic">{user?.profile.bio}</p>
+                    <h1 className="text-4xl font-semibold">{user?.firstName + user?.lastName}</h1>
+                    <p className="text-sm text-gray-500 mt-6">Major in {user?.profile.major}</p>
+                    <span className="text-gray-600 text-sm mt-4">Uid: {user?.profile.uid}</span>
+                    <p className="text-gray-700 font-semibold mt-4 text-center italic">Bio: {user?.profile.bio}</p>
                 </div>
             </div>
 
@@ -122,40 +138,101 @@ const UserProfile = () => {
                     Edit
                 </span>
                 <div className="grid grid-cols-3 gap-8">
+                    {/* Email */}
                     <div className="flex items-center gap-4 max-w-full">
                         <span className="font-medium">Email:</span>
                         <span className="text-gray-700 bg-gray-200 w-64 px-2 py-1 rounded">{user?.email}</span>
                     </div>
+
+                    {/* Instagram */}
                     <div className="flex items-center gap-4 max-w-full">
-                        <a href="#" className="text-pink-600 hover:text-pink-800">
-                            <FaInstagram size={32} />
+                        <a
+                        href={user?.profile.social_media.instagram || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-pink-600 hover:text-pink-800 cursor-pointer"
+                        >
+                        <FaInstagram size={32} />
                         </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.instagram}</span>
+                        <a
+                        href={user?.profile.social_media.instagram || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded cursor-pointer hover:underline"
+                        >
+                        {user?.profile.social_media.instagram || '\u00A0'}
+                        </a>
                     </div>
+
+                    {/* Facebook */}
                     <div className="flex items-center gap-4 max-w-full">
-                        <a href="#" className="text-blue-600 hover:text-blue-800">
-                            <FaFacebook size={32} />
+                        <a
+                        href={user?.profile.social_media.facebook || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 cursor-pointer"
+                        >
+                        <FaFacebook size={32} />
                         </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.facebook}</span>
+                        <a
+                        href={user?.profile.social_media.facebook || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded cursor-pointer hover:underline"
+                        >
+                        {user?.profile.social_media.facebook || '\u00A0'}
+                        </a>
                     </div>
+
+                    {/* Phone (not a link) */}
                     <div className="flex items-center gap-4 max-w-full">
                         <span className="font-medium">Phone:</span>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.phone}</span>
+                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">
+                        {user?.profile.phone ? `+61 ${user.profile.phone}` : '\u00A0'}
+                        </span>
                     </div>
-                    
+
+                    {/* Discord */}
                     <div className="flex items-center gap-4 max-w-full">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-800">
-                            <FaDiscord size={32} />
+                        <a
+                        href={user?.profile.social_media.discord || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-indigo-600 hover:text-indigo-800 cursor-pointer"
+                        >
+                        <FaDiscord size={32} />
                         </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.discord}</span>
+                        <a
+                        href={user?.profile.social_media.discord || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded cursor-pointer hover:underline"
+                        >
+                        {user?.profile.social_media.discord || '\u00A0'}
+                        </a>
                     </div>
+
+                    {/* Slack */}
                     <div className="flex items-center gap-4 max-w-full">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-800">
-                            <FaSlack size={32} />
+                        <a
+                        href={user?.profile.social_media.slack || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-indigo-600 hover:text-indigo-800 cursor-pointer"
+                        >
+                        <FaSlack size={32} />
                         </a>
-                        <span className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded">{user?.profile.social_media.slack}</span>
+                        <a
+                        href={user?.profile.social_media.slack || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-700 bg-gray-50 w-64 px-2 py-1 rounded cursor-pointer hover:underline"
+                        >
+                        {user?.profile.social_media.slack || '\u00A0'}
+                        </a>
                     </div>
-                </div>
+                    </div>
+
             </div>
 
             {/* Avatar Modal */}
@@ -222,30 +299,72 @@ const UserProfile = () => {
             <div className="mt-4 flex flex-col items-center">
                 {/* UserName */}
                 <div className="mb-4 w-full">
-                <label htmlFor="username" className="text-sm font-medium text-gray-700">UserName</label>
+                <label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+                    First Name
+                </label>
                 <input
                     type="text"
-                    id="username"
-                    name="username"
-                    value={editUser?.profile.name} // Assuming you're storing the username in `editUser.name`
+                    id="firstName"
+                    name="firstName"
+                    value={editUser?.firstName || ""}
                     onChange={(e) => handleChange(e)}
+                    placeholder="First name"
                     className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
-                    placeholder="Enter your username"
                 />
+
+                <label htmlFor="lastName" className="text-sm font-medium text-gray-700 mt-4 block">
+                    Last Name
+                </label>
+                <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={editUser?.lastName || ""}
+                    onChange={(e) => handleChange(e)}
+                    placeholder="Last name"
+                    className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+                />
+                </div>
+
+
+                <div className="mb-4 w-full">
+                    <label htmlFor="major" className="text-sm font-medium text-gray-700">Major</label>
+                    <input
+                        type="text"
+                        id="major"
+                        name="profile.major"
+                        value={editUser?.profile.major} 
+                        onChange={(e) => handleChange(e)}
+                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+                        placeholder="Enter your major"
+                    />
+                </div>
+
+                <div className="mb-4 w-full">
+                    <label htmlFor="uid" className="text-sm font-medium text-gray-700">Uid</label>
+                    <input
+                        type="text"
+                        id="uid"
+                        name="profile.uid"
+                        value={editUser?.profile.uid} 
+                        onChange={(e) => handleChange(e)}
+                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md "
+                        placeholder="Enter your Uid"
+                    />
                 </div>
 
                 {/* Bio */}
                 <div className="mb-4 w-full">
-                <label htmlFor="bio" className="text-sm font-medium text-gray-700">Bio</label>
-                <textarea
-                    id="bio"
-                    name="bio"
-                    value={editUser?.profile.bio} 
-                    onChange={(e) => handleChange(e)}
-                    className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
-                    placeholder="Tell us something about yourself"
-                    rows="4"
-                />
+                    <label htmlFor="bio" className="text-sm font-medium text-gray-700">Bio</label>
+                    <textarea
+                        id="bio"
+                        name="profile.bio"
+                        value={editUser?.profile.bio} 
+                        onChange={(e) => handleChange(e)}
+                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+                        placeholder="Tell us something about yourself"
+                        rows="4"
+                    />
                 </div>
 
                 <div className="flex justify-between w-full mt-6">
@@ -282,15 +401,20 @@ const UserProfile = () => {
                     {/* Phone */}
                     <div className="mb-4 w-full">
                     <label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone</label>
-                    <input
-                        type="text"
-                        id="phone"
-                        name="phone"
-                        value={editUser?.profile.phone} 
-                        onChange={(e) => handleChange(e)}
-                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
-                        placeholder="Enter your phone number"
-                    />
+                        <div className="mt-2 flex rounded-md shadow-sm">
+                            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-100 text-gray-700 text-sm">
+                            +61
+                            </span>
+                            <input
+                            type="text"
+                            id="phone"
+                            name="profile.phone"
+                            value={editUser?.profile.phone || ''}
+                            onChange={(e) => handleChange(e)}
+                            className="flex-1 block w-full min-w-0 rounded-r-md px-4 py-2 border border-gray-300"
+                            placeholder="Phone (without +61)"
+                            />
+                        </div>
                     </div>
 
                     {/* Facebook */}
@@ -299,11 +423,11 @@ const UserProfile = () => {
                     <input
                         type="text"
                         id="facebook"
-                        name="facebook"
+                        name="profile.social_media.facebook"
                         value={editUser?.profile.social_media.facebook} // Assuming you're storing Facebook in `editDetails.facebook`
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
-                        placeholder="Enter your Facebook username"
+                        placeholder="Enter your Facebook link"
                     />
                     </div>
                     
@@ -313,11 +437,11 @@ const UserProfile = () => {
                     <input
                         type="text"
                         id="instagram"
-                        name="instagram"
+                        name="profile.social_media.instagram"
                         value={editUser?.profile.social_media.instagram} 
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
-                        placeholder="Enter your Instagram username"
+                        placeholder="Enter your Instagram link"
                     />
                     </div>
 
@@ -327,11 +451,11 @@ const UserProfile = () => {
                     <input
                         type="text"
                         id="discord"
-                        name="discord"
+                        name="profile.social_media.discord"
                         value={editUser?.profile.social_media.discord} 
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
-                        placeholder="Enter your Discord username"
+                        placeholder="Enter your Discord link"
                     />
                     </div>
                     {/* Slack */}
@@ -340,11 +464,11 @@ const UserProfile = () => {
                     <input
                         type="text"
                         id="slack"
-                        name="slack"
+                        name="profile.social_media.slack"
                         value={editUser?.profile.social_media.slack} 
                         onChange={(e) => handleChange(e)}
                         className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
-                        placeholder="Enter your Slack username"
+                        placeholder="Enter your Slack link"
                     />
                     </div>
                     
