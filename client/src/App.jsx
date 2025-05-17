@@ -6,6 +6,7 @@ import Signup from './pages/signup/Signup'
 import QuestionStart from './pages/questions/QuestionStart'
 import QuestionBody from './pages/questions/QuestionBody'
 import QuestionEnd from './pages/questions/QuestionEnd'
+import UserProfile from './pages/userProfile/UserProfile'
 
 import { Toaster } from 'react-hot-toast'
 import Message from "./pages/message/Message";
@@ -14,7 +15,7 @@ import Message from "./pages/message/Message";
 function App() {
   // const { authUser } = useAuthContext();
   return (
-    <div className='p-4 h-screen flex items-center justify-center'>
+    <div className='h-screen flex items-center justify-center'>
       <Routes>
         {/* <Route path='/' element={authUser ? <Home /> : <Navigate to={"/login"}/> } />
         <Route path='/login' element={authUser ? <Navigate to = '/' /> : <Login />} />
@@ -30,6 +31,7 @@ function App() {
         <Route path='/questionbody' element={<QuestionBody />} />
         <Route path='/questionend' element={<QuestionEnd />} />
         <Route path='/message' element={<Message />} />
+        <Route path='/userprofile' element={<UserProfile/>}/>
       </Routes>
       <Toaster />
     </div>
