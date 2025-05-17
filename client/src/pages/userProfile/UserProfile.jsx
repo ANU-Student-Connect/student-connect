@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import useProfile from "../../hooks/useProfile";
 import TopBar from "../../components/basic/TopBar";
-import { FaFacebook, FaInstagram, FaDiscord, FaCamera, FaSlack } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaDiscord, FaSlack } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
 import Modal from "react-modal";
 import DefaultAvater from "../../assets/pic/defaultavater.png";
 
 Modal.setAppElement("#root");
 
 const UserProfile = () => {
-    const { fetchUserProfile, editUserProfile } = useProfile();  
+    const { fetchUserProfile, editUserProfile, fetchAvatarPool } = useProfile();  
     const [user, setUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);  // Whether the profile is in editing mode
     const [editUser, setEditUser] = useState(null); // Stores the modified user info when editing
+    const [avatars, setAvatars] = useState([]);
+    const [selectedAvatar, setSelectedAvatar] = useState(null);
     const [loading, setLoading] = useState(true);   // Whether the data is still being fetched
     const [error, setError] = useState(null);  // Holds any error messages
     const [isAvatarOpen, setIsAvatarOpen] = useState(false);
@@ -28,7 +31,8 @@ const UserProfile = () => {
                     setLoading(false);
                     setUser(userData);  // Set the fetched user data
                     setEditUser(userData);  // Initialize editUser with fetched data
-                    setImage(userData.profile.avatar_url)
+                    setImage(userData.profile.avatar_url);
+                    setSelectedAvatar(userData.profile.avatar_url);
                 } else {
                     setError("User data is not available");
                 }
@@ -36,8 +40,23 @@ const UserProfile = () => {
                 setError("Error fetching user profile data");
             }
         };
+
+        const loadAvatars = async () => {
+            try {
+                const data = await fetchAvatarPool();
+                setAvatars(data);
+            } catch (err) {
+                console.error("Error fetching avatar pool:", err);
+            }
+        };
         fetchData();
+        loadAvatars();
     }, []);
+
+    // Triggered when a field value changes
+    const handleChange = (e) => {
+        setEditUser({ ...editUser, [e.target.name]: e.target.value });
+    };
 
     // Commented out save functionality
     const handleSave = async () => {
@@ -53,19 +72,8 @@ const UserProfile = () => {
     };
 
 
-    // Triggered when a field value changes
-    const handleChange = (e) => {
-        setEditUser({ ...editUser, [e.target.name]: e.target.value });
-    };
 
-    // Handle image upload
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setImage(imageUrl);
-        }
-    };
+
 
     if (loading) {
         return <div>Loading...</div>; 
@@ -94,7 +102,7 @@ const UserProfile = () => {
                     onClick={() => setIsAvatarOpen(true)}
                 >
                     <img src={user?.profile.avatar_url} className="w-full h-full object-cover rounded-full" />
-                    <FaCamera className="absolute bottom-0 right-0 text-black cursor-pointer" size={20} />
+                    <MdEdit className="absolute bottom-0 right-0 text-black hover:text-blue-500 transition duration-200 cursor-pointer" size={20} />
                 </div>
                 <div>
                     <h1 className="text-2xl font-semibold">{user?.profile.name}</h1>
@@ -153,20 +161,53 @@ const UserProfile = () => {
             {/* Avatar Modal */}
             <Modal
                 isOpen={isAvatarOpen}
-                onRequestClose={() => setIsAvatarOpen(false)}
+                onRequestClose={() => {
+                    setIsAvatarOpen(false);
+                }}
                 className="bg-white p-8 rounded-lg shadow-lg w-[500px] max-w-lg mx-auto"
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
             >
                 <h2 className="text-xl font-semibold text-center">Avatar</h2>
                 <div className="mt-4 flex flex-col items-center">
                     {/* Avatar Large Image */}
-                    <img src={image} alt="Profile" className="w-64 h-64 object-cover rounded-full border" />
+                    <img src={image} alt="Profile" className="w-48 h-48 object-cover rounded-full border" />
+                    <div className="grid grid-cols-4 gap-10 mt-4 mb-6 max-h-72 overflow-y-auto">
+                        {avatars?.map((avatar) => (
+                        <img
+                            key={avatar}
+                            src={avatar}
+                            alt="Avatar"
+                            className={`w-20 h-20 object-cover rounded-full border-2 cursor-pointer ${selectedAvatar === avatar? 'border-4 border-green-600' : 'border-gray-300'}`}
+                            onClick={() => {
+                            setSelectedAvatar(avatar);
+                            setImage(avatar);
+                            }}
+                        />
+                        ))}
+                    </div>
+                </div>
+                <div className="flex justify-end gap-4">
+                    {/* Cancel */}
+                    <button
+                        onClick={() => {
+                            setIsAvatarOpen(false);
+                            setSelectedAvatar(user?.profile.avatar_url);
+                        }}
+                        className="w-1/2 py-2 text-white bg-gray-400 rounded-md hover:bg-gray-500"
+                    >
+                        Cancel
+                    </button>
                     
-                    {/* Upload */}
-                    <label className="mt-8 px-4 py-2 bg-green-700 text-white rounded cursor-pointer">
-                        Upload
-                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                    </label>
+                    {/* Save */}
+                    <button
+                        onClick={()=>{
+                            editUser.profile.avatar_url = selectedAvatar;
+                            handleSave();
+                        }}
+                        className="w-1/2 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                    >
+                        Save
+                    </button>
                 </div>
             </Modal>
             

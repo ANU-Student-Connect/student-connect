@@ -70,12 +70,23 @@ const useProfile = () => {
     }
   };
 
+  const fetchAvatarPool = async () => {
+    try {
+      const response = await fetch('/api/avatars');
+      const data = await response.json(); 
+      return data.map(item => item.imageUrl);
+    } catch (err) {
+      console.error("Error fetching avatars:", err);
+      return [];
+    }
+  };
+
   // auto-fetch profile on mount
   useEffect(() => {
     fetchUserProfile();
   }, []);
 
-  return { loading, fetchUserProfile, editUserProfile };
+  return { loading, fetchUserProfile, editUserProfile, fetchAvatarPool };
 };
 
 export default useProfile;
