@@ -49,7 +49,7 @@ const Header = ({ currentPage }) => {
                         </li>
                     </ul>
                 </nav>
-                <Bell className="cursor-pointer hover:text-gray-300 transition-colors" />
+                {/* <Bell className="cursor-pointer hover:text-gray-300 transition-colors" /> */}
                 <div
                     className="relative"
                     onMouseEnter={handleMouseEnter}

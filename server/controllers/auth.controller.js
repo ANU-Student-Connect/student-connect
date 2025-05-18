@@ -46,6 +46,8 @@ export const signup = async (req, res) => {
             verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
         });
 
+        newUser.profile.avatar_url = process.env.DEFAULT_AVATAR_URL;
+
         if (newUser) {
             // GENERATE JWT TOKEN
             await newUser.save();

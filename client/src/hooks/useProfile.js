@@ -6,43 +6,21 @@ import { useAuthContext } from '../context/AuthContext'; // Adjust path if neede
 const useProfile = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  //const [profile, setProfile] = useState(null); // Store user profile info
   const { setAuthUser } = useAuthContext();
 
   // fetch user profile from backend
   const fetchUserProfile = async () => {
     setLoading(true);
     try {
-      // const res = await fetch('/api/user/profile');
-      // if (!res.ok) throw new Error('Failed to fetch profile');
-      // const data = await res.json();
-      // setProfile(data.data); // Save profile to state
+      const userId = JSON.parse(localStorage.getItem('auth-user'))?._id;
+      if (!userId) throw new Error('User ID not found in localStorage');
 
-      const fakeResponse = {
-        success: true,
-        data: {
-          user_id: "u1001",
-          email: "u1001@anu.edu.au",
-          profile: {
-            name: "Alex Johnson",
-            avatar_url: "https://gravatar.com/avatar/f95c780bd082238c8a435d3549bb09be?s=400&d=robohash&r=x",
-            uid: "u0000001",
-            phone: "+61 412 345 678",
-            bio: "Software engineer with a passion for hiking and photography. Always looking to connect with like-minded individuals!",
-            major: "Computer Science",
-            social_media: {
-              instagram: "@alexj_photos",
-              facebook: "@alex_codes",
-              discord: "alexjohnson-dev",
-              slack:"@alex_slack"
-            },
-            created_at: "2024-08-15T10:24:32Z",
-            last_active: "2025-04-30T12:40:15Z"
-          }
-        }
-      };
-      //setProfile(fakeResponse.data);
-      return fakeResponse.data
+      const res = await fetch(`/api/users/${userId}`);
+      if (!res.ok) throw new Error('Failed to fetch profile');
+      const data = await res.json();
+
+      localStorage.setItem('auth-user', JSON.stringify(data.user));
+      return data.user;
       
     } catch (err) {
       toast.error(err.message || 'Something went wrong');
@@ -52,23 +30,57 @@ const useProfile = () => {
   };
 
   // edit user profile
-  const editUserProfile = async (updatedData) => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/user/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData),
-      });
-      if (!res.ok) throw new Error('Failed to update profile');
-      toast.success('Profile updated');
-      await fetchUserProfile(); // Refresh profile data after update
-    } catch (err) {
-      toast.error(err.message || 'Update failed');
-    } finally {
-      setLoading(false);
+  const editUserProfile = async (updatedData,shouldVerifyPhone) => {
+  setLoading(true);
+  try {
+
+    if (!updatedData.firstName || updatedData.firstName.trim() === '') {
+      throw new Error("First name cannot be empty");
     }
-  };
+    if (!updatedData.lastName || updatedData.lastName.trim() === '') {
+      throw new Error("Last name cannot be empty");
+    }
+
+    const phoneRegex = /^\d{9}$/;
+    if (shouldVerifyPhone && (updatedData.profile?.phone.trim() === '' || !phoneRegex.test(updatedData.profile.phone))) {
+      throw new Error("Phone number must be exactly 9 digits");
+    }
+
+
+    const res = await fetch('/api/users/edit', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    const text = await res.text();
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch (parseError) {
+      throw new Error("Server response is not valid JSON");
+    }
+
+    if (!res.ok) {
+      throw new Error(result.message || 'Failed to update profile');
+    }
+
+    toast.success('Profile updated');
+    await fetchUserProfile();
+    return { success: true };
+
+  } catch (err) {
+    toast.error(err.message || 'Update failed');
+    return { success: false, error: err.message };
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const fetchAvatarPool = async () => {
     try {
