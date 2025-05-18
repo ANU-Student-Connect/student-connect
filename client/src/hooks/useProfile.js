@@ -30,7 +30,7 @@ const useProfile = () => {
   };
 
   // edit user profile
-  const editUserProfile = async (updatedData) => {
+  const editUserProfile = async (updatedData,shouldVerifyPhone) => {
   setLoading(true);
   try {
 
@@ -42,7 +42,7 @@ const useProfile = () => {
     }
 
     const phoneRegex = /^\d{9}$/;
-    if (updatedData.profile?.phone.trim() === '' || !phoneRegex.test(updatedData.profile.phone)) {
+    if (shouldVerifyPhone && (updatedData.profile?.phone.trim() === '' || !phoneRegex.test(updatedData.profile.phone))) {
       throw new Error("Phone number must be exactly 9 digits");
     }
 
