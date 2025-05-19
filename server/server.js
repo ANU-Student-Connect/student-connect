@@ -8,6 +8,7 @@ import http from 'http';
 import authRoutes from './routes/auth.routes.js';
 import messageRoutes from './routes/message.routes.js';
 import userRoutes from './routes/user.routes.js';
+import avatarRoutes from './routes/avatar.routes.js';
 import connectToMongoDB from './db/connectToMongoDB.js';
 
 const app = express();
@@ -29,6 +30,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/avatars', avatarRoutes);
 
 // app.get('/', (req, res) => {
 //     // root route http://localhost:3000/
