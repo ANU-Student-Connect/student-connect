@@ -1,30 +1,21 @@
 import React from 'react';
-import WeChatIcon from '../../assets/icons/messagesicons/WeChat.svg';
+import InstagramIcon from '../../assets/icons/messagesicons/Instagram.svg';
 import FacebookIcon from '../../assets/icons/messagesicons/Facebook.svg';
 import SlackIcon from '../../assets/icons/messagesicons/Slack.svg';
 import DiscordIcon from '../../assets/icons/messagesicons/Discord.svg';
 
-export const SocietiesContent = ({ content }) => {
-    if (!content) return null;
-    return (
-        <ul className="space-y-2">
-            <li className="text-sm">{content}</li>
-        </ul>
-    );
-};
-
 export const ContactsContent = ({ content }) => {
     const contacts = [
-        { icon: WeChatIcon, name: 'WeChat' },
-        { icon: FacebookIcon, name: 'Facebook' },
-        { icon: SlackIcon, name: 'Slack' },
-        { icon: DiscordIcon, name: 'Discord' }
+        { icon: InstagramIcon, name: 'instagram' },
+        { icon: FacebookIcon, name: 'facebook' },
+        { icon: SlackIcon, name: 'slack' },
+        { icon: DiscordIcon, name: 'discord' }
     ];
 
     return (
         <div className="flex justify-around">
             {contacts.map((contact, index) => {
-                const isActive = content && content.toLowerCase() === contact.name.toLowerCase();
+                const isActive = content && content[contact.name]; // 若字段存在则点亮
                 return (
                     <div
                         key={index}
@@ -40,12 +31,4 @@ export const ContactsContent = ({ content }) => {
 
 export const MajorContent = ({ content }) => (
     <p className="text-sm">{content}</p>
-);
-
-export const InterestContent = ({ content }) => (
-    <ul className="space-y-2">
-        {Array.isArray(content) && content.map((item, index) => (
-            <li key={index} className="text-sm">{item}</li>
-        ))}
-    </ul>
 );

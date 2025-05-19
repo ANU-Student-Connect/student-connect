@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
-import { SocietiesContent, ContactsContent, MajorContent, InterestContent } from './DropdownContents';
+import { ContactsContent, MajorContent } from './DropdownContents';
 
 const UserProfile = ({ isOpen, selectedFriend }) => {
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -36,46 +36,34 @@ const UserProfile = ({ isOpen, selectedFriend }) => {
         fetchFriendInfo();
     }, [isOpen, selectedFriend?.id]);
 
-    if (!isOpen || !friendInfo) return null;
+    if (!isOpen || !friendInfo || !friendInfo.profile) return null;
+
+    const { profile } = friendInfo;
 
     return (
         <div className="w-1/4 border-l p-4">
             <div className="flex flex-col items-center mb-6">
                 <img
                     className="w-20 h-20 rounded-full mb-2"
-                    src={friendInfo.avatar || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}
+                    src={profile.avatar_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}
                     alt="Avatar"
                 />
-                <h2 className="font-bold text-xl">{friendInfo.name}</h2>
+                <h2 className="font-bold text-xl">{profile.name}</h2>
             </div>
             <div className="space-y-2">
-                <Dropdown
-                    title="Societies"
-                    isOpen={openDropdown === 'societies'}
-                    onToggle={() => toggleDropdown('societies')}
-                >
-                    {friendInfo.club && <SocietiesContent content={friendInfo.club} />}
-                </Dropdown>
                 <Dropdown
                     title="Contacts"
                     isOpen={openDropdown === 'contacts'}
                     onToggle={() => toggleDropdown('contacts')}
                 >
-                    {friendInfo.socialMedia && <ContactsContent content={friendInfo.socialMedia} />}
+                    {profile.social_media && <ContactsContent content={profile.social_media} />}
                 </Dropdown>
                 <Dropdown
                     title="Major"
                     isOpen={openDropdown === 'major'}
                     onToggle={() => toggleDropdown('major')}
                 >
-                    {friendInfo.major && <MajorContent content={friendInfo.major} />}
-                </Dropdown>
-                <Dropdown
-                    title="Interest"
-                    isOpen={openDropdown === 'interest'}
-                    onToggle={() => toggleDropdown('interest')}
-                >
-                    {friendInfo.interests?.length > 0 && <InterestContent content={friendInfo.interests} />}
+                    {profile.major && <MajorContent content={profile.major} />}
                 </Dropdown>
             </div>
         </div>
