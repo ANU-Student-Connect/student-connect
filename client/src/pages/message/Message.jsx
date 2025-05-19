@@ -6,7 +6,7 @@ import UserProfile from '../../components/messages/UserProfile';
 import defaultAvatar from '../../assets/pic/defaultavater.png';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3001', { withCredentials: true });
+const socket = io('http://localhost:8000', { withCredentials: true });
 
 const Message = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -28,7 +28,7 @@ const Message = () => {
     useEffect(() => {
         const fetchFriendCards = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/messages/friend-cards", {
+                const response = await fetch("http://localhost:8000/api/messages/friend-cards", {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
@@ -100,7 +100,7 @@ const Message = () => {
         if (!selected) return;
 
         try {
-            const response = await fetch(`http://localhost:3001/api/messages/${friendId}`, {
+            const response = await fetch(`http://localhost:8000/api/messages/${friendId}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
-import { ContactsContent, MajorContent } from './DropdownContents';
+import { ContactsContent } from './DropdownContents';
 
 const UserProfile = ({ isOpen, selectedFriend }) => {
     const [openDropdown, setOpenDropdown] = useState(null);

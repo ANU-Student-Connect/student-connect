@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MoreVertical } from 'lucide-react';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3001', { withCredentials: true });
+const socket = io('http://localhost:8000', { withCredentials: true });
 
 const ChatWindow = ({ onToggleProfile, isProfileOpen, selectedFriend }) => {
     const [newMessage, setNewMessage] = useState("");
@@ -25,7 +25,7 @@ const ChatWindow = ({ onToggleProfile, isProfileOpen, selectedFriend }) => {
         if (!newMessage.trim()) return;
         try {
             const response = await fetch(
-                `http://localhost:3001/api/messages/send/${selectedFriend.id}`,
+                `http://localhost:8000/api/messages/send/${selectedFriend.id}`,
                 {
                     method: 'POST',
                     credentials: 'include',

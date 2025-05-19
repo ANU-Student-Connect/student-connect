@@ -73,7 +73,7 @@ export const getFriendCards = async (req, res) => {
 
         // Friend details
         const friendsInfo = await User.find({ email: { $in: friendsEmails } })
-            .select("email name avatar major club socialMedia interests")
+            .select("email firstName lastName avatar major club socialMedia interests")
             .lean();
 
         // Number of recent messages + number of unread messages
@@ -96,7 +96,7 @@ export const getFriendCards = async (req, res) => {
                 // Formalization export
                 return {
                     friendId: friend._id,
-                    friendName: friend.name,
+                    friendName: `${friend.firstName} ${friend.lastName}`,
                     friendAvatar: friend.avatar,
                     friendMajor: friend.major,
                     friendClub: friend.club,

@@ -15,11 +15,13 @@ export const ContactsContent = ({ content }) => {
     return (
         <div className="flex justify-around">
             {contacts.map((contact, index) => {
-                const isActive = content && content[contact.name]; // 若字段存在则点亮
+                const isActive = content?.[contact.name];
                 return (
                     <div
                         key={index}
-                        className={`p-2 rounded-full transition-colors duration-200 ${isActive ? 'bg-purple-400' : 'hover:bg-[#87F3F5]'}`}
+                        className={`p-2 rounded-full transition-colors duration-200 ${
+                            isActive ? 'bg-purple-400' : 'hover:bg-[#87F3F5]'
+                        }`}
                     >
                         <img src={contact.icon} alt={contact.name} width={24} height={24} />
                     </div>
@@ -28,7 +30,3 @@ export const ContactsContent = ({ content }) => {
         </div>
     );
 };
-
-export const MajorContent = ({ content }) => (
-    <p className="text-sm">{content}</p>
-);
