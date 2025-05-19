@@ -4,8 +4,8 @@ import useLogin from "../../hooks/useLogin";
 import "./login.css"
 
 const Login = () => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [email, setEmail] = useState(null);
+	const [password, setPassword] = useState(null);
 
 	const { loading, login } = useLogin();
 
@@ -30,7 +30,7 @@ const Login = () => {
                     <div className="password-container row">
                         <input className='w-full input input-bordered h-10 px-2 text-gray-700' type="password" placeholder="Enter Password" onChange={(e) => setPassword(e.target.value)} />
                         <span
-                            className="icon-password" x
+                            className="icon-password"
                             style={{ top: "3px" }}
                         ></span>
                     </div>
