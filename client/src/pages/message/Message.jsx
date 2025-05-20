@@ -16,12 +16,12 @@ const Message = () => {
     function formatTime(isoTime) {
         if (!isoTime) return '';
         const date = new Date(isoTime);
-        return date.toLocaleString([], {
+        return date.toLocaleString('en-US', {
             hour: '2-digit',
             minute: '2-digit',
             hour12: true,
             month: 'short',
-            day: 'numeric'
+            day: 'numeric',
         });
     }
 
