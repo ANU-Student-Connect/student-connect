@@ -19,7 +19,14 @@ export const signup = async (req, res) => {
             return res.status(400).json({ message: 'Passwords do not match' });
         }
 
-        // 2) Check for existing user
+        // CHECK ANU EMAIL DOMAIN
+        // Only allow emails ending in @anu.edu.au (case-insensitive)
+        const anuEmailRegex = /^[^\s@]+@anu\.edu\.au$/i;
+        if (!anuEmailRegex.test(email)) {
+            return res.status(400).json({ message: 'Sign-ups are restricted to ANU email addresses.' });
+        }
+
+        // CHECK FOR EXISTING USER
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             if (existingUser.isVerified) {
