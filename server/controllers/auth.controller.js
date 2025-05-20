@@ -143,6 +143,7 @@ export const login = async (req, res) => {
             _id: user._id,
             email: user.email,
             success: true,
+            user:user,
             message: "Login successfully.",
         });
 

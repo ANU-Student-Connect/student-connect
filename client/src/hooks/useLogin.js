@@ -28,10 +28,40 @@ const useLogin = () => {
             if (data.error) {
                 throw new Error(data.error);
             }
-            toast.success('Login successful');
-            localStorage.setItem('auth-user', JSON.stringify(data));
-            setAuthUser(data);
-            navigate('/home');
+            
+            if(data.user.isFirstLogin)
+            {
+                data.user.isFirstLogin = false;
+                const res = await fetch('/api/users/edit', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data.user),
+                });
+
+                const text = await res.text();
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch (parseError) {
+                    throw new Error("Server response is not valid JSON");
+                }
+
+                if (!res.ok) {
+                    throw new Error(result.message || 'Failed to update first login status');
+                }
+                navigate('/questionstart');
+            }
+            else
+            {
+                toast.success('Login successful');
+                navigate('/home');
+            }
+            
+            localStorage.setItem('auth-user', JSON.stringify(data.user));
+            setAuthUser(data.user);
         } catch (error) {
             toast.error(error.message);
         } finally {
