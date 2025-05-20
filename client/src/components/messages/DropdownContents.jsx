@@ -30,3 +30,7 @@ export const ContactsContent = ({ content }) => {
         </div>
     );
 };
+
+export const MajorContent = ({ content }) => (
+    <p className="text-sm">{content}</p>
+);

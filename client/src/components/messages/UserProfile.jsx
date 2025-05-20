@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
-import { ContactsContent } from './DropdownContents';
+import {ContactsContent, MajorContent} from './DropdownContents';
 
 const UserProfile = ({ isOpen, selectedFriend }) => {
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -14,7 +14,7 @@ const UserProfile = ({ isOpen, selectedFriend }) => {
         const fetchFriendInfo = async () => {
             if (!isOpen || !selectedFriend?.id) return;
             try {
-                const response = await fetch(`http://localhost:3001/api/messages/friend-info/${selectedFriend.id}`, {
+                const response = await fetch(`api/messages/friend-info/${selectedFriend.id}`, {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
@@ -48,7 +48,9 @@ const UserProfile = ({ isOpen, selectedFriend }) => {
                     src={profile.avatar_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}
                     alt="Avatar"
                 />
-                <h2 className="font-bold text-xl">{profile.name}</h2>
+                <h2 className="font-bold text-xl">
+                    {(friendInfo.firstName || '') + ' ' + (friendInfo.lastName || '')}
+                </h2>
             </div>
             <div className="space-y-2">
                 <Dropdown
