@@ -1,50 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
-import { SocietiesContent, ContactsContent, MajorContent, InterestContent } from './DropdownContents';
+import {ContactsContent, MajorContent} from './DropdownContents';
 
-const UserProfile = ({ isOpen }) => {
+const UserProfile = ({ isOpen, selectedFriend }) => {
     const [openDropdown, setOpenDropdown] = useState(null);
+    const [friendInfo, setFriendInfo] = useState(null);
 
     const toggleDropdown = (dropdown) => {
         setOpenDropdown(openDropdown === dropdown ? null : dropdown);
     };
 
-    if (!isOpen) return null;
+    useEffect(() => {
+        const fetchFriendInfo = async () => {
+            if (!isOpen || !selectedFriend?.id) return;
+            try {
+                const response = await fetch(`api/messages/friend-info/${selectedFriend.id}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch friend info');
+                }
+
+                const data = await response.json();
+                setFriendInfo(data);
+            } catch (err) {
+                console.error("Error loading friend info:", err);
+            }
+        };
+
+        fetchFriendInfo();
+    }, [isOpen, selectedFriend?.id]);
+
+    if (!isOpen || !friendInfo || !friendInfo.profile) return null;
+
+    const { profile } = friendInfo;
 
     return (
         <div className="w-1/4 border-l p-4">
             <div className="flex flex-col items-center mb-6">
-                <div className="w-20 h-20 bg-blue-300 rounded-full mb-2"></div>
-                <h2 className="font-bold text-xl">Username</h2>
+                <img
+                    className="w-20 h-20 rounded-full mb-2"
+                    src={profile.avatar_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}
+                    alt="Avatar"
+                />
+                <h2 className="font-bold text-xl">
+                    {(friendInfo.firstName || '') + ' ' + (friendInfo.lastName || '')}
+                </h2>
             </div>
             <div className="space-y-2">
-                <Dropdown
-                    title="Societies"
-                    isOpen={openDropdown === 'societies'}
-                    onToggle={() => toggleDropdown('societies')}
-                >
-                    <SocietiesContent />
-                </Dropdown>
                 <Dropdown
                     title="Contacts"
                     isOpen={openDropdown === 'contacts'}
                     onToggle={() => toggleDropdown('contacts')}
                 >
-                    <ContactsContent />
+                    {profile.social_media && <ContactsContent content={profile.social_media} />}
                 </Dropdown>
                 <Dropdown
                     title="Major"
                     isOpen={openDropdown === 'major'}
                     onToggle={() => toggleDropdown('major')}
                 >
-                    <MajorContent />
-                </Dropdown>
-                <Dropdown
-                    title="Interest"
-                    isOpen={openDropdown === 'interest'}
-                    onToggle={() => toggleDropdown('interest')}
-                >
-                    <InterestContent />
+                    {profile.major && <MajorContent content={profile.major} />}
                 </Dropdown>
             </div>
         </div>

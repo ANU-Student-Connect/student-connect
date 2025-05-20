@@ -4,60 +4,133 @@ import Sidebar from '../../components/messages/Sidebar';
 import ChatWindow from '../../components/messages/ChatWindow';
 import UserProfile from '../../components/messages/UserProfile';
 import defaultAvatar from '../../assets/pic/defaultavater.png';
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:8000', { withCredentials: true });
 
 const Message = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [selectedFriend, setSelectedFriend] = useState(null);
-    const [friends, setFriends] = useState([
-        {
-            id: 1,
-            name: 'Anil',
-            status: "April fool's day",
-            time: 'Today, 9:52pm',
-            avatar: defaultAvatar,
-            messageStatus: 'read',
-            unreadCount: 0,
-            lastReplyTime: 'Today, 10:30pm',
-            messages: [
-                { id: 1, text: "Hey, how's it going?", sent: true },
-                { id: 2, text: "Not bad, you?", sent: false },
-            ]
-        },
-        {
-            id: 2,
-            name: 'Friends Forever',
-            status: 'Hahahaha!',
-            time: 'Today, 9:52pm',
-            avatar: defaultAvatar,
-            messageStatus: 'unread',
-            unreadCount: 4,
-            lastReplyTime: 'Today, 9:52pm',
-            messages: [
-                { id: 1, text: "Movie night tonight?", sent: false },
-                { id: 2, text: "Sounds great!", sent: true },
-            ]
-        }
-    ]);
+    const [friends, setFriends] = useState([]);
+
+    function formatTime(isoTime) {
+        if (!isoTime) return '';
+        const date = new Date(isoTime);
+        return date.toLocaleString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+            month: 'short',
+            day: 'numeric'
+        });
+    }
 
     useEffect(() => {
-        fetch("http://localhost:9000/testAPI")
-            .then(res => res.text())
-            .then(res => console.log("API Response:", res))
-            .catch(err => console.error(err));
+        const fetchFriendCards = async () => {
+            try {
+                const response = await fetch("http://localhost:8000/api/messages/friend-cards", {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
 
-        fetch("http://localhost:9000/testDB")
-            .then(res => res.text())
-            .then(res => console.log("DB Response:", res))
-            .catch(err => console.error(err));
+                if (!response.ok) {
+                    throw new Error("Failed to fetch friend cards");
+                }
+
+                const data = await response.json();
+
+                const mappedFriends = data.map(friend => ({
+                    id: friend.friendId,
+                    name: friend.friendName,
+                    avatar: friend.friendAvatar || defaultAvatar,
+                    status: friend.lastMessage || "Say hi 👋",
+                    time: formatTime(friend.lastMessageTime),
+                    messageStatus: friend.unreadCount > 0 ? 'unread' : 'read',
+                    unreadCount: friend.unreadCount,
+                    messages: []
+                }));
+
+                setFriends(mappedFriends);
+            } catch (err) {
+                console.error("Error loading friend cards:", err);
+            }
+        };
+
+        fetchFriendCards();
     }, []);
+
+    // Real time news (transfer) + leaving
+    useEffect(() => {
+        if (!selectedFriend) return;
+
+        const handleReceive = (data) => {
+            if (data.receiverId === selectedFriend.id) {
+                const exists = selectedFriend.messages.some(msg => msg.id === data._id);
+                if (!exists) {
+                    setSelectedFriend(prev => ({
+                        ...prev,
+                        messages: [
+                            ...prev.messages,
+                            {
+                                id: data._id,
+                                text: data.message,
+                                // 发送者不是好友，就是自己——右侧
+                                sent: data.senderId !== selectedFriend.id,
+                                createdAt: data.createdAt
+                            }
+                        ]
+                    }));
+                }
+            }
+        };
+
+        socket.on('receive-message', handleReceive);
+        return () => socket.off('receive-message', handleReceive);
+    }, [selectedFriend]);
 
     const toggleProfile = () => {
         setIsProfileOpen(prevState => !prevState);
     };
 
-    const handleFriendSelect = (friendId) => {
+    const handleFriendSelect = async (friendId) => {
         const selected = friends.find(friend => friend.id === friendId);
-        setSelectedFriend(selected);
+        if (!selected) return;
+
+        try {
+            const response = await fetch(`http://localhost:8000/api/messages/${friendId}`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch messages");
+            }
+
+            const data = await response.json();
+
+            const updatedSelected = {
+                ...selected,
+                messages: data.messages.map((msg) => ({
+                    id: msg._id,
+                    text: msg.message,
+                    sent: msg.side === "right",
+                    createdAt: msg.createdAt
+                })),
+                lastReplyTime: data.messages.length > 0
+                    ? formatTime(data.messages[data.messages.length - 1].createdAt)
+                    : ""
+            };
+
+            setSelectedFriend(updatedSelected);
+        } catch (error) {
+            console.error("Error loading messages for selected friend:", error);
+        }
     };
 
     return (
@@ -66,8 +139,13 @@ const Message = () => {
             <div className="flex-1 flex overflow-hidden">
                 <Sidebar friends={friends} onFriendSelect={handleFriendSelect} />
                 <main className="flex-1 flex">
-                    <ChatWindow onToggleProfile={toggleProfile} isProfileOpen={isProfileOpen} selectedFriend={selectedFriend} />
-                    <UserProfile isOpen={isProfileOpen} />
+                    <ChatWindow
+                        key={selectedFriend?.id}  // ✅ 关键：保证切换好友时 socket useEffect 正常更新
+                        onToggleProfile={toggleProfile}
+                        isProfileOpen={isProfileOpen}
+                        selectedFriend={selectedFriend}
+                    />
+                    <UserProfile isOpen={isProfileOpen} selectedFriend={selectedFriend} />
                 </main>
             </div>
         </div>

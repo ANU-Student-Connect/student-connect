@@ -1,20 +1,15 @@
-import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
+import mongoose from "mongoose";
+import User from "../models/user.model.js";
 
-export const sendMessage = async (req, res) => { 
+export const sendMessage = async (req, res) => {
     try { 
         const { message } = req.body;
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
 
-        let conversation = await Conversation.findOne({
-            participants: { $all: [senderId, receiverId] },
-        })
-
-        if (!conversation) { 
-            conversation = await Conversation.create({
-                participants: [senderId, receiverId],
-            });
+        if (!message || message.trim() === "") {
+            return res.status(400).json({ message: "Message text cannot be empty" });
         }
 
         const newMessage = new Message({
@@ -23,14 +18,9 @@ export const sendMessage = async (req, res) => {
             message,
         });
 
-        if (newMessage) { 
-            conversation.messages.push(newMessage._id);
-        }
+        await newMessage.save();
 
         // SOCKET IO FUNCTIONALITY
-
-        // parallel running
-        await Promise.all([conversation.save(), newMessage.save()]);
 
         res.status(201).json(newMessage);
     } catch (error) { 
@@ -39,24 +29,109 @@ export const sendMessage = async (req, res) => {
     }
 };
 
-export const getMessages = async (req, res) => { 
-    try { 
-        const { id: userToChatId } = req.params;
-        const senderId = req.user._id;
+// Get all messages between the current user and the specified friend, and return a structure that is easy to display on the front end
+export const getMessages = async (req, res) => {
+    try {
+        const { id: friendId } = req.params; // Here, friendId is the friend id passed in after clicking the friend card
+        const currentUserId = req.user._id;
 
-        const conversation = await Conversation.findOne({
-            participants: { $all: [senderId, userToChatId] },
-        }).populate("messages"); // not refs, but actual messages
+        // Query all messages between the current user and friends, sorted in ascending order by creation time
+        const messages = await Message.find({
+            $or: [
+                { senderId: currentUserId, receiverId: friendId },
+                { senderId: friendId, receiverId: currentUserId }
+            ]
+        }).sort({ createdAt: 1 }).lean(); // Use lean() to convert to pure JS object for subsequent data processing
 
-        if (!conversation) { 
-            return res.status(200).json([]);
+        // Add a side field to each message: if the message comes from the current user, mark it as "right", otherwise mark it as "left"
+        const chatMessages = messages.map(msg => ({
+            ...msg,
+            side: msg.senderId.toString() === currentUserId.toString() ? "right" : "left"
+        }));
+
+        // The returned data structure also carries the current user id, and the front end can determine the display style based on the id
+        res.status(200).json({
+            currentUserId,
+            messages: chatMessages
+        });
+    } catch (error) {
+        console.error("Error in getMessages controller: ", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const getFriendCards = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const currentUser = await User.findById(userId).lean();
+
+        if (!currentUser) {
+            return res.status(404).json({ message: "User not found" });
         }
 
-        const messages = conversation.messages;
-        res.status(200).json(messages);
+        const friendsEmails = currentUser.friends || [];
 
-    } catch (error) { 
-        console.log("Error in getMessages controller: ", error.message);
+        // Friend details
+        const friendsInfo = await User.find({ email: { $in: friendsEmails } })
+            .select("email firstName lastName avatar major club socialMedia interests")
+            .lean();
+
+        // Number of recent messages + number of unread messages
+        const friendCards = await Promise.all(
+            friendsInfo.map(async (friend) => {
+                //Recent news
+                const lastMsg = await Message.findOne({
+                    $or: [
+                        { senderId: userId, receiverId: friend._id },
+                        { senderId: friend._id, receiverId: userId }
+                    ]
+                }).sort({ createdAt: -1 }).lean();
+
+                // Number of unread messages (you can add isRead character judgment, or read receiverId as soon as possible “unread”)
+                const unreadCount = await Message.countDocuments({
+                    senderId: friend._id, receiverId: userId,
+                    isRead: false // Check the model isRead Dial
+                });
+
+                // Formalization export
+                return {
+                    friendId: friend._id,
+                    friendName: `${friend.firstName} ${friend.lastName}`,
+                    friendAvatar: friend.avatar,
+                    friendMajor: friend.major,
+                    friendClub: friend.club,
+                    friendSocialMedia: friend.socialMedia,
+                    friendInterests: friend.interests,
+                    lastMessage: lastMsg ? lastMsg.message : '',
+                    lastMessageTime: lastMsg ? lastMsg.createdAt : '',
+                    unreadCount: unreadCount
+                };
+            })
+        );
+
+        res.status(200).json(friendCards);
+    } catch (error) {
+        console.error("Error in getFriendCards: ", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Interface for getting friend details
+export const getFriendInfo = async (req, res) => {
+    try {
+        const { id: friendId } = req.params; // Get friend's id from URL parameters
+
+        // Query friend information, you can return only some fields as needed, such as avatar, name, club, major, social media, etc.
+        const friend = await User.findById(friendId)
+            .select('-password'); // Exclude sensitive information such as passwords
+
+        if (!friend) {
+            return res.status(404).json({ message: "Friend not found" });
+        }
+
+        res.status(200).json(friend);
+    } catch (error) {
+        console.error("Error in getFriendInfo:", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
 };

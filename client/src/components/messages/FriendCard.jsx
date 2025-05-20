@@ -34,7 +34,7 @@ const FriendCard = ({ avatar, name, status, time, messageStatus, unreadCount, on
             </div>
             <div className="flex-grow">
                 <h3 className="font-semibold text-gray-800">{name}</h3>
-                <p className="text-sm text-gray-500">{status}</p>
+                <p className="text-sm text-gray-500 truncate max-w-[10rem]">{status}</p>
             </div>
             <div className="text-right flex flex-col items-end">
                 <p className="text-xs text-gray-400">{time}</p>
