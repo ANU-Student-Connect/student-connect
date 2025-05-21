@@ -35,6 +35,13 @@ export default function useSignup() {
       setLoading(false)
       throw new Error(msg)
     }
+    const anuEmailRegex = /^[^\s@]+@anu\.edu\.au$/i
+    if (!anuEmailRegex.test(email)) {
+      const msg = 'Please sign up with your ANU email (@anu.edu.au)'
+      toast.error(msg)
+      setLoading(false)
+      throw new Error(msg)
+    }
 
     try {
       // 2) Call your API
